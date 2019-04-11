@@ -1,54 +1,38 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "lem_in.h"
 #define TRUE 1
-#define FALSE 0 
+#define FALSE 0
+#define START 0
+#define END 1
+#define ROOM 2
+#define LINK 3
 
 
 typedef struct  s_nodes
 {
     char    *name;
-    int     index;
+    int     type;
     int     x;
     int     y;
-    int     visited;
-    struct s_nodes *adj;
     struct s_nodes *next;
 
 }               t_nodes;
 
 
-t_nodes      *ft_create_node(int index, char *name, int x, int y)
+t_nodes      *ft_create_node(int type, char *name, int x, int y)
 {
     t_nodes *node;
 
     node = (t_nodes *)malloc(sizeof(t_nodes));
-    node->name = strdup(name);
+    node->name = name;
     node->x = x;
     node->y = y;
-    node->index = index;
+    node->type = type;
     node->next = NULL;
-    node->adj = NULL;
-    node->visited = FALSE;
     return (node); 
 }
-
-// void        *ft_add_adj(t_nodes **l, char *name, t_nodes *node)
-// {
-//     t_nodes *tmp;
-//     t_nodes *tmp1;
-
-//     tmp = *l;
-//     while(tmp)
-//     {
-//         if (!strcmp(tmp->name, name))
-//         {
-//             ft_add_node()
-//         }
-//         tmp = tmp->next;
-//     }
-
-// }
 
 t_nodes     *ft_get_node(char *name, t_nodes *l)
 {
@@ -73,80 +57,231 @@ t_nodes     *ft_add_node(t_nodes **l, t_nodes *node)
     return (*l);
 }
 
-void        *ft_add_adj(t_nodes **l, char *name, t_nodes *node)
-{
-    t_nodes *tmp;
-    t_nodes *tmp1;
-
-    tmp = ft_get_node(name, *l);
-    node->adj = ft_add_node(&(node->adj), 
-                                    ft_create_node(tmp->index, tmp->name, tmp->x, tmp->y));
-    tmp = *l;
-    while(tmp)
-    {
-        if (!strcmp(tmp->name, name))
-        {
-            tmp->adj = ft_add_node(&(tmp->adj), 
-                                    ft_create_node(node->index, node->name, node->x, node->y));
-        }
-        tmp = tmp->next;
-    }
-
-}
-
-
 void    ft_print_nodes(t_nodes *nodes)
 {
-    t_nodes *tmp;
 
     while(nodes)
     {
-        printf("%s =>[", nodes->name);
-        tmp = nodes->adj;
-        while (tmp)
-        {
-            if (tmp->next)
-                printf("%s-%d, ",tmp->name, tmp->visited);
-            else
-                 printf("%s-%d", tmp->name, tmp->visited);
-            tmp = tmp->next;
-        }
-        printf("]\n");
+        ft_putendl_fd(nodes->name, 1);
         nodes = nodes->next;
     }
     
 }
 
+void    ft_readnode(char *line, t_nodes **l, int node_name, char **result)
+{
+    char **tab;
 
+    if(!line)
+    {
+        get_next_line(0, &line);
+        *result = ft_strjoin(*result, line);
+        *result = ft_strjoin(*result, "\n");
+    }
+    tab = ft_strsplit(line, ' ');
+    ft_add_node(l, ft_create_node(node_name, tab[0], ft_atoi(tab[1]), ft_atoi(tab[2])));
+    if (node_name != ROOM)
+        ft_strdel(&line);
+}
+int     ft_linetype(char *line)
+{
+    int c;
 
+    //char *tmp = line;
+    c = 0;
+    while (*line)
+    {
+        if (*line == ' ')
+            c++;
+        line++;
+    }
+    //printf("%s -- %d\n", tmp, c);
+    return (c == 2 ? ROOM : LINK); 
+        
+}
+
+int     ft_getindex(char *name, char **names, int size)
+{
+    int i;
+
+    i = 0;
+    while (i < size)
+    {
+        if (!ft_strcmp(name, names[i]))
+            return (i);
+        i++;
+    }
+    return (-1);
+}
+
+int     ft_readallnode(t_nodes **l, char **line, int size, char **result)
+{
+    while (get_next_line(0, line))
+    {
+        *result = ft_strjoin(*result, *line);
+        *result = ft_strjoin(*result, "\n");
+        if (!ft_strcmp("##start", *line))
+            ft_readnode(NULL, l, START, result);
+        else if (!ft_strcmp("##end", *line))
+            ft_readnode(NULL, l, END, result);
+        else if (!ft_strncmp("#", *line, 1))
+        {
+            ft_strdel(line);
+            continue;
+        }
+        else if (ft_linetype(*line) == ROOM)
+                ft_readnode(*line, l, ROOM, result);
+        else
+            break;
+        size++;
+        ft_strdel(line);
+    }
+    return (size);
+}
+
+char **ft_buildnames(t_nodes *tmp, int size)
+{
+    int     index;
+    char    **names;
+
+    index = 2;
+    names = (char **)malloc(size * sizeof(char *));
+     while(tmp)
+    {
+        if (tmp->type == START)
+            names[START] = ft_strdup(tmp->name);
+        else if (tmp->type == END)
+            names[END] = ft_strdup(tmp->name);
+        else
+        {
+            names[index] = ft_strdup(tmp->name);
+            index++;
+        }
+        tmp = tmp->next;
+    }
+    return (names);
+}
+
+char **ft_initmat(int size)
+{
+    char **mat;
+    int index;
+
+    index = 0;
+    mat = (char **)malloc(size * sizeof(char *));
+    while (index < size)
+    {
+        mat[index] = (char *)ft_memalloc(sizeof(char) * (size + 1));
+        ft_memset(mat[index], '0', size);
+        index++;
+    }
+    return (mat);
+}
+char    **ft_readlink(char **mat, char *line, char **names, int size)
+{
+    char **tab; 
+    int i;
+    int j;
+
+    tab = ft_strsplit(line, '-');
+    i = ft_getindex(tab[0], names, size);
+    j = ft_getindex(tab[1], names, size);
+    mat[i][j] = '1';
+    mat[j][i] = '1';
+    ft_strdel(&line);
+    while (get_next_line(0, &line))
+    {
+        ft_putendl_fd(line, 1);
+        if (!ft_strncmp("#", line, 1))
+        {
+            ft_strdel(&line);
+            continue;
+        }
+        else
+        {
+            tab = ft_strsplit(line, '-');
+            i = ft_getindex(tab[0], names, size);
+            j = ft_getindex(tab[1], names, size);
+            mat[i][j] = '1';
+            mat[j][i] = '1';
+        }
+        ft_strdel(&line);
+    }
+    return (mat);
+}
+void ft_printmat(char **mat, int size)
+{
+    int index = 0;
+
+    ft_putendl("x| 0 1 2 3 4 5 6 7");
+    ft_putendl("-----------------");
+    while (index < size)
+    {
+        int i = 0;
+        ft_putnbr(index);
+        ft_putstr("| ");
+        while (mat[index][i])
+        {
+            ft_putchar(mat[index][i]);
+            ft_putchar(' ');
+            i++;
+        }
+        ft_putchar('\n');
+        index++;
+    }
+}
 
 int main()
 {
     t_nodes *l;
+    int size;
+    char *line;
+    char **names;
+    int number_of_ants;
+    char **mat;
+    char *result;
 
     l = NULL;
+    
+    //number of ants
+    get_next_line(0,&line);
+    number_of_ants = ft_atoi(line);
+    result = ft_strjoin(line, "\n");
+    // ft_putnbr_fd(number_of_ants, 1);
+    // ft_putendl_fd("", 1);
+    // read node 
+    size = ft_readallnode(&l, &line, 0, &result);
+    // list of name
+    printf("%s", result);
+    names = ft_buildnames(l, size);
+    // Mat adj
+    mat = ft_initmat(size);
+    // read links
+    mat = ft_readlink(mat, line, names, size);
+    //ft_print_nodes(l);
+    // ft_putendl_fd("*****", 1);
+    // int index = 0;
+    // while (index < size)
+    // {
+    //     ft_putnbr(index);
+    //     ft_putchar_fd(' ', 1);
+    //     ft_putendl_fd(names[index], 1);
+    //     index++;
+    // }
+    // char **mat;
+    // mat = (char **)malloc(size * sizeof(char *));
+    // index = 0;
+    // while (index < size)
+    // {
+    //     mat[index] = (char *)ft_memalloc(sizeof(char) * (size + 1));
+    //     ft_memset(mat[index], '0', size);
+    //     index++;
+    // }
+    ft_printmat(mat, size);
+    
 
-    l = ft_add_node(&l, ft_create_node(0, "1", 0, 0));
-    l = ft_add_node(&l, ft_create_node(1, "2", 0, 0));
-    l = ft_add_node(&l, ft_create_node(2, "3", 0, 0));
-    l = ft_add_node(&l, ft_create_node(3, "4", 0, 0));
-    l = ft_add_node(&l, ft_create_node(4, "5", 0, 0));
-    l = ft_add_node(&l, ft_create_node(5, "6", 0, 0));
-    l = ft_add_node(&l, ft_create_node(6, "7", 0, 0));
-    l = ft_add_node(&l, ft_create_node(7, "0", 0, 0));
-    ft_add_adj(&l , "0", ft_get_node("4", l));
-    ft_add_adj(&l , "0", ft_get_node("6", l));
-    ft_add_adj(&l , "1", ft_get_node("3", l));
-    ft_add_adj(&l , "4", ft_get_node("3", l));
-    ft_add_adj(&l , "5", ft_get_node("2", l));
-    ft_add_adj(&l , "3", ft_get_node("5", l));
-    ft_add_adj(&l , "4", ft_get_node("2", l));
-    ft_add_adj(&l , "2", ft_get_node("1", l));
-    ft_add_adj(&l , "7", ft_get_node("6", l));
-    ft_add_adj(&l , "7", ft_get_node("2", l));
-    ft_add_adj(&l , "7", ft_get_node("4", l));
-    ft_add_adj(&l , "6", ft_get_node("5", l));
-    ft_print_nodes(l);
+
+
 
     
     return (0);
