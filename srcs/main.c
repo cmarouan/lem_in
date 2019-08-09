@@ -8,18 +8,39 @@
 #define END 1
 #define ROOM 2
 #define LINK 3
+#define ERROR -1
+#define ENDLINE ft_strdup("\n")
 
+char **fordfulkerson(t_lemin *lemin);
 
-typedef struct  s_nodes
+t_line *ft_createline(char *line)
 {
-    char    *name;
-    int     type;
-    int     x;
-    int     y;
-    struct s_nodes *next;
+    t_line  *l;
 
-}               t_nodes;
+    l = (t_line *)malloc(sizeof(t_line));
+    l->last = l;
+    l->line = line;
+    l->next = NULL;
+    return (l);
+}
 
+t_line  *ft_addline(t_line *list, char *line)
+{
+    t_line *tmp;
+
+    tmp = ft_createline(line); 
+    if (!list)
+        return (tmp);
+    list->last->next = tmp;
+    list->last = tmp;
+    return (list);
+}
+
+void ft_outerror()
+{
+    ft_putstr("ERROR");
+    exit(ERROR);
+}
 
 t_nodes      *ft_create_node(int type, char *name, int x, int y)
 {
@@ -68,20 +89,20 @@ void    ft_print_nodes(t_nodes *nodes)
     
 }
 
-void    ft_readnode(char *line, t_nodes **l, int node_name, char **result)
+t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin)
 {
     char **tab;
 
     if(!line)
     {
         get_next_line(0, &line);
-        *result = ft_strjoin(*result, line);
-        *result = ft_strjoin(*result, "\n");
+        lemin->lines = ft_addline(lemin->lines, line);
     }
     tab = ft_strsplit(line, ' ');
-    ft_add_node(l, ft_create_node(node_name, tab[0], ft_atoi(tab[1]), ft_atoi(tab[2])));
-    if (node_name != ROOM)
-        ft_strdel(&line);
+    ft_add_node(&lemin->nodes, ft_create_node(node_name, tab[0], ft_atoi(tab[1]), ft_atoi(tab[2])));
+   // if (node_name != ROOM)
+     //   ft_strdel(&line);
+     return(lemin);
 }
 int     ft_linetype(char *line)
 {
@@ -96,7 +117,12 @@ int     ft_linetype(char *line)
         line++;
     }
     //printf("%s -- %d\n", tmp, c);
-    return (c == 2 ? ROOM : LINK); 
+    if (c == 2) 
+        return (ROOM);
+    else if (c == 0)
+        return (LINK);
+    else
+        return (ERROR); 
         
 }
 
@@ -105,6 +131,8 @@ int     ft_getindex(char *name, char **names, int size)
     int i;
 
     i = 0;
+    if (!name)
+        return (-1);
     while (i < size)
     {
         if (!ft_strcmp(name, names[i]))
@@ -114,29 +142,29 @@ int     ft_getindex(char *name, char **names, int size)
     return (-1);
 }
 
-int     ft_readallnode(t_nodes **l, char **line, int size, char **result)
+t_lemin     *ft_readallnode(char **line, t_lemin *lemin)
 {
+    //list = &lemin->nodes;
     while (get_next_line(0, line))
     {
-        *result = ft_strjoin(*result, *line);
-        *result = ft_strjoin(*result, "\n");
+        lemin->lines = ft_addline(lemin->lines, *line);
         if (!ft_strcmp("##start", *line))
-            ft_readnode(NULL, l, START, result);
+            lemin = ft_readnode(NULL, START, lemin);
         else if (!ft_strcmp("##end", *line))
-            ft_readnode(NULL, l, END, result);
+            lemin = ft_readnode(NULL, END, lemin);
         else if (!ft_strncmp("#", *line, 1))
         {
-            ft_strdel(line);
+            lemin->lines = ft_addline(lemin->lines, *line);
             continue;
         }
         else if (ft_linetype(*line) == ROOM)
-                ft_readnode(*line, l, ROOM, result);
+               lemin = ft_readnode(*line, ROOM, lemin);
         else
             break;
-        size++;
-        ft_strdel(line);
+        lemin->size++;
+        //ft_strdel(line);
     }
-    return (size);
+    return (lemin);
 }
 
 char **ft_buildnames(t_nodes *tmp, int size)
@@ -177,37 +205,41 @@ char **ft_initmat(int size)
     }
     return (mat);
 }
-char    **ft_readlink(char **mat, char *line, char **names, int size)
+t_lemin    *ft_readlink(t_lemin *lemin, char *line)
 {
     char **tab; 
     int i;
     int j;
-
+    if (!line)
+        ft_outerror();
     tab = ft_strsplit(line, '-');
-    i = ft_getindex(tab[0], names, size);
-    j = ft_getindex(tab[1], names, size);
-    mat[i][j] = '1';
-    mat[j][i] = '1';
-    ft_strdel(&line);
+    i = ft_getindex(tab[0], lemin->names, lemin->size);
+    j = ft_getindex(tab[1], lemin->names, lemin->size);
+    if (i == -1 || j == -1)
+        ft_outerror();
+    lemin->graph[i][j] = '1';
+    lemin->graph[j][i] = '1';
+    //ft_strdel(&line);
     while (get_next_line(0, &line))
     {
-        ft_putendl_fd(line, 1);
+        //ft_putendl_fd(line, 1);
+        lemin->lines = ft_addline(lemin->lines, line);
         if (!ft_strncmp("#", line, 1))
-        {
-            ft_strdel(&line);
+            //ft_strdel(&line);
             continue;
-        }
         else
         {
             tab = ft_strsplit(line, '-');
-            i = ft_getindex(tab[0], names, size);
-            j = ft_getindex(tab[1], names, size);
-            mat[i][j] = '1';
-            mat[j][i] = '1';
+            i = ft_getindex(tab[0], lemin->names, lemin->size);
+            j = ft_getindex(tab[1], lemin->names, lemin->size);
+            if (i == -1 || j == -1)
+                ft_outerror();
+            lemin->graph[i][j] = '1';
+            lemin->graph[j][i] = '1';
         }
-        ft_strdel(&line);
+        //ft_strdel(&line);
     }
-    return (mat);
+    return (lemin);
 }
 void ft_printmat(char **mat, int size)
 {
@@ -231,33 +263,141 @@ void ft_printmat(char **mat, int size)
     }
 }
 
+int countnodefromstart(char *g, int size)
+{
+    int i;
+    int c;
+    
+    c = 0;
+    i = 0;
+
+    while (i < size)
+    {
+        if (g[i] == '1')
+            c++;
+        i++;
+    }
+    return c;
+}
+
+t_adj *ft_addadj(t_adj *l, int node)
+{
+    t_adj *t = (t_adj *)malloc(sizeof(t_adj));
+    t->node = node;
+    t->next = NULL;
+    if (!l)
+        return t;
+    t->next = l;
+    return t;
+}
+
+
 int main()
 {
-    t_nodes *l;
-    int size;
-    char *line;
-    char **names;
-    int number_of_ants;
-    char **mat;
-    char *result;
 
-    l = NULL;
+    t_lemin *lemin;
+   // t_nodes *l;
+    //int size;
+    char *line;
+    //t_names name;
+    //int number_of_ants;
+    //char **mat;
+    //char *result;
+
+    //l = NULL;
+    
+
+    lemin = (t_lemin *)malloc(sizeof(t_lemin));
+    lemin->lines = NULL;
+    lemin->nodes = NULL;
+    lemin->start = START;
+    lemin->goal = END;
+    
     
     //number of ants
     get_next_line(0,&line);
-    number_of_ants = ft_atoi(line);
-    result = ft_strjoin(line, "\n");
+    lemin->n_ant = ft_atoi(line);
+
+    lemin->lines = ft_addline(lemin->lines, line);
+    //result = ft_strjoin_me(line, ENDLINE, TRUE);
     // ft_putnbr_fd(number_of_ants, 1);
     // ft_putendl_fd("", 1);
     // read node 
-    size = ft_readallnode(&l, &line, 0, &result);
+    lemin = ft_readallnode(&line, lemin);
     // list of name
-    printf("%s", result);
-    names = ft_buildnames(l, size);
+    
+    lemin->names = ft_buildnames(lemin->nodes, lemin->size);
     // Mat adj
-    mat = ft_initmat(size);
+    lemin->graph = ft_initmat(lemin->size);
     // read links
-    mat = ft_readlink(mat, line, names, size);
+    lemin = ft_readlink(lemin, line);
+    //Names = name.names;
+
+    lemin->tmp = (char **)malloc(sizeof(char *) * lemin->size);
+    for (int i = 0; i < lemin->size; i++)
+        lemin->tmp[i] = (char *)malloc(sizeof(char) * lemin->size);
+
+    t_adj **adj;
+    adj = (t_adj **)malloc(sizeof(t_adj *) * lemin->size);
+    lemin->visited = (int *)malloc(sizeof(int) * lemin->size);
+    lemin->used = (int *)malloc(sizeof(int) * lemin->size);
+    lemin->pred = (int *)malloc(sizeof(int) * lemin->size);
+    for (int u = 0; u < lemin->size; u++) 
+    {
+        //used[u] = 0;}
+       //printf("%p\n", lemin->tmp);
+        adj[u] = NULL;
+        lemin->visited[u] = 0;
+        lemin->used[u] = 0;
+        for (int v = 0; v < lemin->size; v++) 
+        {
+           // printf("%p - %p\n", &lemin->tmp[u][v], &graph[u][v] );
+           
+            lemin->tmp[u][v] = lemin->graph[u][v];
+            if (lemin->graph[u][v] == '1')
+            {
+               // printf("%s ", lemin->names[j]);
+                adj[u] = ft_addadj(adj[u], v);
+            }
+        }
+    }
+    lemin->adj = adj;
+
+    // t_line *ln = lemin->lines;
+    // while (ln)
+    // {
+    //     printf("%s\n", ln->line);
+    //     ln = ln->next;
+    // }
+    
+
+    
+    int count = countnodefromstart(lemin->graph[0], lemin->size);
+    while (count)
+    {
+        printf("iteration %d \n", 5 - count--);
+        lemin->tmp =fordfulkerson(lemin);
+        //break;
+        for (int u = 0; u < lemin->size; u++) 
+        { 
+            //if (t[u][1] == '0')
+              //  mat[u][1] = '0';
+            lemin->used[u] = 0;
+            for (int v = 0; v < lemin->size; v++) 
+            {
+                if (lemin->graph[u][v] == '1' && lemin->tmp[u][v] == '0' && lemin->tmp[v][u]  == '0')
+                    lemin->graph[u][v] = '0';
+                lemin->tmp[u][v] = lemin->graph[u][v];
+            }
+        }
+        break;
+
+        //printf("%s\n", mat[1]);
+    }
+
+
+   // char **t = fordfulkerson(mat, 0, 1, size);
+    //printf("%s", result);
     //ft_print_nodes(l);
     // ft_putendl_fd("*****", 1);
     // int index = 0;
@@ -277,7 +417,23 @@ int main()
     //     ft_memset(mat[index], '0', size);
     //     index++;
     // }
-    ft_printmat(mat, size);
+
+
+    
+    // for (int i = 0; i < lemin->size; i++)
+    // {
+    //     printf("%s -> ",lemin->names[i]);
+    //     t_adj *tmp = lemin->adj[i];
+    //     while (tmp )
+    //     {
+    //         printf("%s ", lemin->names[tmp->node]);
+    //         tmp = tmp->next;
+    //     }
+           
+    //     printf("\n");
+    // }
+    // ft_printmat(lemin->graph, lemin->size);
+    
     
 
 

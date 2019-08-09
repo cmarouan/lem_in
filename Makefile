@@ -1,10 +1,16 @@
 
 NAME = lem
-SRC = srcs/*.c
+SRC = srcs/main.c srcs/bfs.c
 CFLAG = -Wall -Wextra -Werror
 INC = includes
 
-compile:
+test2:
+	gcc $(CFLAG) srcs/allpathbfs.c
+
+t:
+	gcc $(CFLAG) srcs/bfs.c
+
+c:
 	gcc $(CFLAG) $(SRC) -I $(INC) libft/*.c gnl/*.c
 
 all:$(NAME)
