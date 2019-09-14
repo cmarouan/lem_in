@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/08/04 10:33:20 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/14 19:57:10 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,27 @@ typedef struct s_lemin
     int     *pred;
     t_adj   **adj;
     t_line  *lines;
-}           t_lemin;
+}
+           t_lemin;
+
+typedef struct s_path
+{
+    int node;
+    struct s_path *next;
+}               t_path;
+
+typedef struct s_listpath
+{
+    t_path path;
+    struct s_listpath *next;
+}               t_listpath;
+
+typedef struct s_group
+{
+    t_listpath *paths; 
+    struct s_groups *next;
+}               t_group;
+
 
 
 
