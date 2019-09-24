@@ -293,36 +293,53 @@ t_adj *ft_addadj(t_adj *l, int node)
 
       //printf("---%d %d %d---\n",nbNode , nb_ants,nbPath);
 
-t_group* best_groups(t_group* grp, int nb_ants)
+t_group* best_groups(t_group* grps, int nb_ants)
 {
-   t_group* bestG;
+   t_group  *bestG;
+   t_group *grp;
    int nbPath;
    int nbNode;
+   int count = 0;
+   int m = 21425384;
 
    bestG = NULL;
+   grp = grps;
    while (grp)
    {
+       //groups iterat
        nbNode = 0;
        nbPath = grp->paths->size;
-       while (grp->paths)
+       t_listpath *tmp = grp->paths;
+       m = 21425384;
+       count = 0;
+       while (tmp)
        {
-           while (grp->paths->path)
-           {
-               nbNode += grp->paths->path->size;
-               break;
-           }
-           grp->paths = grp->paths->next;
+            //path iterat
+            count++;
+            if (tmp->path)
+                nbNode += tmp->path->size;
+            tmp->path->all_prev_inst =  ceil((double)(nb_ants + nbNode - count*2) / (double)count);
+            if (m > tmp->path->all_prev_inst)
+            { 
+                grp->stop = count;
+                m = tmp->path->all_prev_inst;
+            }
+            //printf(" %d paths has %d instructon\n", count, tmp->path->all_prev_inst);
+            tmp = tmp->next;
        }
-       printf("---%d %d %d---\n",nbNode , nb_ants,nbPath);
+       grp->best = m;
+       
+      // printf("---%d %d %d---\n",nbNode , nb_ants,nbPath);
        //printf("%f\n", ceil(((nbNode + nb_ants) - (nbPath * 2)) / nbPath));
        grp->instr = ceil((double)((nbNode + nb_ants) - (nbPath * 2)) / (double)nbPath);
-       printf("|%d|\n",  grp->instr);
+       //printf("|%d|\n",  grp->instr);
        if (bestG == NULL)
            bestG = grp;
-       else if (bestG->instr > grp->instr)
+       else if (bestG->best > grp->best)
            bestG = grp;
        grp = grp->next;
    }
+   //printf("best result is : %d\n", m);
    return (bestG);
 }
 
@@ -410,11 +427,12 @@ int main()
 
     
     int count = countnodefromstart(lemin->graph[0], lemin->size);
-    //count = 10;
+    //count = 5;
     while (count)
     {
        // printf("iteration %d \n", 5 - count--);
        count--;
+       int chnage = 0;
         lemin->tmp =fordfulkerson(lemin);
         //return 0;
         //break;
@@ -426,16 +444,21 @@ int main()
             for (int v = 0; v < lemin->size; v++) 
             {
                 if (lemin->graph[u][v] == '1' && lemin->tmp[u][v] == '0' && lemin->tmp[v][u]  == '0')
+                {
                     lemin->graph[u][v] = '0';
+                    chnage++;
+                }
                 lemin->tmp[u][v] = lemin->graph[u][v];
             }
         }
-        //break;
+        if (!chnage)
+            break;
+        else chnage = 0;
 
         //printf("%s\n", mat[1]);
     }
 
-
+/*
     t_group *temp = lemin->groups;
     while (temp)
     {
@@ -453,10 +476,10 @@ int main()
         temp = temp->next;
     }
     printf("******\n");
-
+*/
 
     t_group *teemp = best_groups(lemin->groups, lemin->n_ant);
-    printf("nbr inst : %d \n", teemp->instr);
+    printf("nbr inst : %d nbr paths : %d \n", teemp->best, teemp->stop);
 
    // char **t = fordfulkerson(mat, 0, 1, size);
     //printf("%s", result);

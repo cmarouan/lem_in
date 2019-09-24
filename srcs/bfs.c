@@ -189,12 +189,13 @@ t_path *addnode(t_path *path, int node)
     return newnode;
 }
 
-t_listpath *addpath(t_listpath *paths, t_path *newpath)
+t_listpath *addpath(t_listpath *paths, t_path *newpath, int nbrant)
 {
     t_listpath *list;
 
     list = (t_listpath *)malloc(sizeof(t_listpath));
-    newpath->nbr_inst = newpath->size;
+    newpath->nbr_inst = newpath->size - 2 + nbrant;
+    newpath->all_prev_inst = 0;
     list->path = newpath;
     list->size = 1;
     list->next = NULL;
@@ -265,7 +266,7 @@ char **fordfulkerson(t_lemin *l)
         //int khalid = 0;
         if (l->check == 0)
         {
-            paths = addpath(paths, newpath);
+            paths = addpath(paths, newpath, l->n_ant);
             //khalid = paths->size;
           //  while (newpath) { printf("%s ", l->names[newpath->node]); newpath = newpath->next;}
         }

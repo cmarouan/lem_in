@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/23 17:17:42 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/24 11:56:18 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
+#define MIN(a,b) (a<=b?a:b)
 
 
 typedef struct s_line
@@ -64,6 +65,8 @@ typedef struct s_group
 {
     t_listpath *paths;
     int instr;
+    int stop;
+    int best;
     struct s_group *last;
     struct s_group *next;
 }               t_group;
