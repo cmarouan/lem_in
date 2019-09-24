@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/14 19:57:10 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/23 17:17:42 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include "libft.h"
 # include <stdio.h>
 # include <stdlib.h>
+# include <math.h>
+
 
 typedef struct s_line
 {
@@ -40,6 +42,32 @@ typedef struct s_adj
     struct s_adj    *next;
 }   t_adj;
 
+typedef struct s_path
+{
+    int node;
+    int size;
+    int nbr_inst;
+    int all_prev_inst;
+    struct s_path *next;
+}               t_path;
+
+typedef struct s_listpath
+{
+    t_path *path;
+    int size;
+    int stop;
+    struct s_listpath *last;
+    struct s_listpath *next;
+}               t_listpath;
+
+typedef struct s_group
+{
+    t_listpath *paths;
+    int instr;
+    struct s_group *last;
+    struct s_group *next;
+}               t_group;
+
 typedef struct s_lemin
 {
     int     size;
@@ -56,26 +84,13 @@ typedef struct s_lemin
     int     *pred;
     t_adj   **adj;
     t_line  *lines;
-}
-           t_lemin;
+    int     *checker;
+    t_group *groups;
+}           t_lemin;
 
-typedef struct s_path
-{
-    int node;
-    struct s_path *next;
-}               t_path;
 
-typedef struct s_listpath
-{
-    t_path path;
-    struct s_listpath *next;
-}               t_listpath;
 
-typedef struct s_group
-{
-    t_listpath *paths; 
-    struct s_groups *next;
-}               t_group;
+
 
 
 

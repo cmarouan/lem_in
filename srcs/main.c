@@ -291,6 +291,40 @@ t_adj *ft_addadj(t_adj *l, int node)
     return t;
 }
 
+      //printf("---%d %d %d---\n",nbNode , nb_ants,nbPath);
+
+t_group* best_groups(t_group* grp, int nb_ants)
+{
+   t_group* bestG;
+   int nbPath;
+   int nbNode;
+
+   bestG = NULL;
+   while (grp)
+   {
+       nbNode = 0;
+       nbPath = grp->paths->size;
+       while (grp->paths)
+       {
+           while (grp->paths->path)
+           {
+               nbNode += grp->paths->path->size;
+               break;
+           }
+           grp->paths = grp->paths->next;
+       }
+       printf("---%d %d %d---\n",nbNode , nb_ants,nbPath);
+       //printf("%f\n", ceil(((nbNode + nb_ants) - (nbPath * 2)) / nbPath));
+       grp->instr = ceil((double)((nbNode + nb_ants) - (nbPath * 2)) / (double)nbPath);
+       printf("|%d|\n",  grp->instr);
+       if (bestG == NULL)
+           bestG = grp;
+       else if (bestG->instr > grp->instr)
+           bestG = grp;
+       grp = grp->next;
+   }
+   return (bestG);
+}
 
 int main()
 {
@@ -310,6 +344,7 @@ int main()
     lemin = (t_lemin *)malloc(sizeof(t_lemin));
     lemin->lines = NULL;
     lemin->nodes = NULL;
+    lemin->groups = NULL;
     lemin->start = START;
     lemin->goal = END;
     
@@ -342,6 +377,7 @@ int main()
     lemin->visited = (int *)malloc(sizeof(int) * lemin->size);
     lemin->used = (int *)malloc(sizeof(int) * lemin->size);
     lemin->pred = (int *)malloc(sizeof(int) * lemin->size);
+    lemin->checker = (int *)malloc(sizeof(int) * lemin->size);
     for (int u = 0; u < lemin->size; u++) 
     {
         //used[u] = 0;}
@@ -349,6 +385,7 @@ int main()
         adj[u] = NULL;
         lemin->visited[u] = 0;
         lemin->used[u] = 0;
+        lemin->checker[u] = 0;
         for (int v = 0; v < lemin->size; v++) 
         {
            // printf("%p - %p\n", &lemin->tmp[u][v], &graph[u][v] );
@@ -373,10 +410,13 @@ int main()
 
     
     int count = countnodefromstart(lemin->graph[0], lemin->size);
+    //count = 10;
     while (count)
     {
-        printf("iteration %d \n", 5 - count--);
+       // printf("iteration %d \n", 5 - count--);
+       count--;
         lemin->tmp =fordfulkerson(lemin);
+        //return 0;
         //break;
         for (int u = 0; u < lemin->size; u++) 
         { 
@@ -390,11 +430,33 @@ int main()
                 lemin->tmp[u][v] = lemin->graph[u][v];
             }
         }
-        break;
+        //break;
 
         //printf("%s\n", mat[1]);
     }
 
+
+    t_group *temp = lemin->groups;
+    while (temp)
+    {
+        printf("Group & size %d :\n", temp->paths->size);
+        t_listpath *paths = temp->paths;
+        while (paths)
+        {
+            t_path *newpath = paths->path; 
+            int khalid = newpath->size;
+            while (newpath) { printf("%s ", lemin->names[newpath->node]); newpath = newpath->next;}
+            printf(" size : %d \n", khalid);
+            paths = paths->next;
+        }
+        
+        temp = temp->next;
+    }
+    printf("******\n");
+
+
+    t_group *teemp = best_groups(lemin->groups, lemin->n_ant);
+    printf("nbr inst : %d \n", teemp->instr);
 
    // char **t = fordfulkerson(mat, 0, 1, size);
     //printf("%s", result);
