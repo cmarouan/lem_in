@@ -92,6 +92,7 @@ void    ft_print_nodes(t_nodes *nodes)
 t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin)
 {
     char **tab;
+    int     i;
 
     if(!line)
     {
@@ -99,10 +100,12 @@ t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin)
         lemin->lines = ft_addline(lemin->lines, line);
     }
     tab = ft_strsplit(line, ' ');
-    ft_add_node(&lemin->nodes, ft_create_node(node_name, tab[0], ft_atoi(tab[1]), ft_atoi(tab[2])));
-   // if (node_name != ROOM)
-     //   ft_strdel(&line);
-     return(lemin);
+    ft_add_node(&lemin->nodes, ft_create_node(node_name, ft_strdup(tab[0]), ft_atoi(tab[1]), ft_atoi(tab[2])));
+    i = 0;
+    while (tab[i])
+        free(tab[i++]);
+    free(tab);
+    return(lemin);
 }
 int     ft_linetype(char *line)
 {
@@ -142,11 +145,19 @@ int     ft_getindex(char *name, char **names, int size)
     return (-1);
 }
 
+void ft_printerr(char *s, int c)
+{
+    printf("here %s\n", s);
+    if (c)
+        exit(0);
+}
+
 t_lemin     *ft_readallnode(char **line, t_lemin *lemin)
 {
     //list = &lemin->nodes;
     while (get_next_line(0, line))
     {
+        //ft_printerr(*line, 0);
         lemin->lines = ft_addline(lemin->lines, *line);
         if (!ft_strcmp("##start", *line))
             lemin = ft_readnode(NULL, START, lemin);
@@ -154,7 +165,7 @@ t_lemin     *ft_readallnode(char **line, t_lemin *lemin)
             lemin = ft_readnode(NULL, END, lemin);
         else if (!ft_strncmp("#", *line, 1))
         {
-            lemin->lines = ft_addline(lemin->lines, *line);
+            //lemin->lines = ft_addline(lemin->lines, *line);
             continue;
         }
         else if (ft_linetype(*line) == ROOM)
@@ -164,6 +175,7 @@ t_lemin     *ft_readallnode(char **line, t_lemin *lemin)
         lemin->size++;
         //ft_strdel(line);
     }
+    
     return (lemin);
 }
 
@@ -592,6 +604,40 @@ t_group *dispatchant(t_group *teemp, t_lemin *lemin)
     return teemp;
 }
 
+void freelines(t_line *lines)
+{
+    t_line *tmp;
+    t_line *last;
+
+    last = lines->last;
+
+    while (lines)
+    {
+    
+        //if (!lines->next)
+        free(lines->line);
+        //printf("%p\n",lines->line);
+        tmp = lines;
+        free(tmp);
+        lines = lines->next;
+       // break;
+    }
+}
+
+void freenodes(t_nodes *nodes)
+{
+    t_nodes *tmp;
+
+    while (nodes)
+    {
+       free(nodes->name);
+       tmp = nodes;
+       nodes = nodes->next;
+       free(tmp);
+    }    
+}
+
+
 int main()
 {
 
@@ -619,20 +665,46 @@ int main()
     get_next_line(0,&line);
     lemin->n_ant = ft_atoi(line);
 
+    
+    
     lemin->lines = ft_addline(lemin->lines, line);
+    
+    
     //result = ft_strjoin_me(line, ENDLINE, TRUE);
     // ft_putnbr_fd(number_of_ants, 1);
     // ft_putendl_fd("", 1);
     // read node 
-    lemin = ft_readallnode(&line, lemin);
-    // list of name
     
+    lemin = ft_readallnode(&line, lemin);
+    /*freelines(lemin->lines);
+    freenodes(lemin->nodes);
+    free(lemin);
+    exit(0);*/
+    
+    //freenodes(lemin->nodes);
+    //freelines(lemin->lines);
+    //free(lemin);
+    // list of name
+    //t_line *ln = lemin->lines;
+    
+    //freelines(lemin->lines);
+   // freenodes(lemin->nodes);
+    //free(lemin);
+    /*while (ln)
+    {
+        
+        printf("%s\n", ln->line);
+        //printf("e\n");
+        ln = ln->next;
+    }*/
+   // exit(0);
     lemin->names = ft_buildnames(lemin->nodes, lemin->size);
     // Mat adj
     lemin->graph = ft_initmat(lemin->size);
     // read links
     lemin = ft_readlink(lemin, line);
     //Names = name.names;
+    
 
     lemin->tmp = (char **)malloc(sizeof(char *) * lemin->size);
     for (int i = 0; i < lemin->size; i++)
