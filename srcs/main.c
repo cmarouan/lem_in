@@ -330,7 +330,7 @@ int*    ft_bzero_me(int *s, int size)
         return (s);
 }
 
-t_arrays* createArrays(t_group* grps, int ants)
+t_arrays* createArrays(t_group* grps)
 {
     t_arrays* arrays;
     t_arrays* first;
@@ -344,11 +344,12 @@ t_arrays* createArrays(t_group* grps, int ants)
     t_listpath* temp = grp->paths;
     while (temp && stop > 0)
     {
+        //printf("stop %d | nbr ant %d\n",stop,temp->nbr_ant);
         stop--;
         nbr_nodes = temp->path->size + 1;
         arrays->pathArray = (int *)malloc(sizeof(int) * nbr_nodes);
         arrays->pathArray = ft_bzero_me(arrays->pathArray, nbr_nodes);
-        arrays->pathArray[0] = ants;
+        arrays->pathArray[0] = temp->nbr_ant;
         arrays->size = nbr_nodes;
         temp = temp->next;
         if (temp && stop > 0)
@@ -487,24 +488,42 @@ char  *getName(t_lemin* lemin, t_path* path, int index)
     return (NULL);
 }
 
+void passAllAnts(int ants, t_lemin* lemin, t_path *path)
+{
+    int i;
+
+    i = 0;
+    while (i < ants)
+    {
+        i++;
+        ft_putstr("L");
+        ft_putnbr(i);
+        ft_putstr("-");
+        ft_putstr(getName(lemin, path, 1));
+        if (i != ants)
+            ft_putstr(" ");
+    }
+    ft_putstr("\n");
+}
+
 void pass_ants(t_arrays* s, int n_ant, t_lemin *lemin, t_listpath *paths)
 {
     int size;
     int nb;
-    int r;
     int done;
+    int nameAnt;
     nb = n_ant;
 
+    nameAnt = 1;
     t_arrays* temp = s;
     t_listpath* tempPath = paths;
-    r = nb;
     done = 0;
     while (done != n_ant)
     {
             while (s)
             {
                 size = s->size - 2;
-                s->pathArray[0] = r;
+                //printf("size = %d\n", size);
                 s->pathArray[size + 1] = done;
                 while (size > 0)
                 {
@@ -517,19 +536,26 @@ void pass_ants(t_arrays* s, int n_ant, t_lemin *lemin, t_listpath *paths)
                         else
                         {
                             s->pathArray[size + 1] = s->pathArray[size];
-                            printf("L%d-%s ", s->pathArray[size + 1], getName(lemin, paths->path, size + 1));
+                            ft_putstr("L");
+                            ft_putnbr(s->pathArray[size + 1]);
+                            ft_putstr("-");
+                            ft_putstr(getName(lemin, paths->path, size + 1));
                         }
                         s->pathArray[size] = 0;
                     }
                     size--;
                     if (size == 0 && s->pathArray[size] > 0)
                     {
-                        s->pathArray[size + 1] = nb - s->pathArray[0] + 1;
-                        printf("L%d-%s ", s->pathArray[size + 1], getName(lemin, paths->path, size + 1));
+                        s->pathArray[size + 1] = nameAnt;
+                        nameAnt++;
+                        ft_putstr("L");
+                        ft_putnbr(s->pathArray[size + 1]);
+                        ft_putstr("-");
+                        ft_putstr(getName(lemin, paths->path, size + 1));
+                        //printf("L%d-%s ", s->pathArray[size + 1], getName(lemin, paths->path, size + 1));
                         s->pathArray[size] -= 1;
                     }
                 }
-                r = s->pathArray[size];
                 done = s->pathArray[s->size - 1];
                 paths = paths->next;
                 s = s->next;
@@ -537,7 +563,7 @@ void pass_ants(t_arrays* s, int n_ant, t_lemin *lemin, t_listpath *paths)
             s = temp;
             paths = tempPath;
             if (done != n_ant)
-                printf("\n");
+                ft_putstr("\n");
     }
 }
 
@@ -686,6 +712,11 @@ int main()
 
     t_group *teemp = best_groups(lemin->groups, lemin->n_ant);
     teemp = dispatchant(teemp, lemin);
+    if (teemp->paths->path->size == 2)
+    {
+        passAllAnts(lemin->n_ant, lemin, teemp->paths->path);
+        return 0;
+    }
     /*
     t_group *temp = teemp;
     while (temp)
@@ -706,9 +737,15 @@ int main()
     printf("******\n");
 */
     t_group *tmp = teemp;
-    t_arrays* s = createArrays(tmp, lemin->n_ant);
+    t_arrays* s = createArrays(tmp);
     /*while (s){
-        printf("ss\n");
+        int i = 0;
+        while (i < s->size)
+        {
+            printf("%d ", s->pathArray[i]);
+            i++;
+        }
+        printf("\n");
         s = s->next;
     }*/
     pass_ants(s, lemin->n_ant, lemin, teemp->paths);
