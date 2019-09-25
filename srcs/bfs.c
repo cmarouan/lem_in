@@ -198,6 +198,7 @@ t_listpath *addpath(t_listpath *paths, t_path *newpath, int nbrant)
     newpath->all_prev_inst = 0;
     list->path = newpath;
     list->size = 1;
+    list->v_node = newpath->size - 1;
     list->next = NULL;
     list->last = list;
     if (!paths)

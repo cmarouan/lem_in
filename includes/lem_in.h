@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/24 11:56:18 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/25 10:51:14 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ typedef struct s_listpath
 {
     t_path *path;
     int size;
-    int stop;
+    int nbr_ant;
+    int v_node;
     struct s_listpath *last;
     struct s_listpath *next;
 }               t_listpath;

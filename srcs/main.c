@@ -541,7 +541,30 @@ void pass_ants(t_arrays* s, int n_ant, t_lemin *lemin, t_listpath *paths)
     }
 }
 
+t_group *dispatchant(t_group *teemp, t_lemin *lemin)
+{
+    int i = 0;
+    int nbrant = lemin->n_ant;
 
+    while (nbrant)
+    {
+        i = 0;
+        t_listpath *ansr;
+        t_listpath *it = teemp->paths;
+        ansr = it; 
+        while (i < teemp->stop)
+        {
+            if (ansr->v_node > it->v_node)
+                ansr = it;
+            it = it->next;
+            i++;
+        }
+        ansr->v_node++;
+        ansr->nbr_ant++;
+        nbrant--;
+    }
+    return teemp;
+}
 
 int main()
 {
@@ -632,7 +655,7 @@ int main()
     {
        // printf("iteration %d \n", 5 - count--);
        count--;
-       int chnage = 0;
+       int change = 0;
         lemin->tmp =fordfulkerson(lemin);
         //return 0;
         //break;
@@ -646,20 +669,25 @@ int main()
                 if (lemin->graph[u][v] == '1' && lemin->tmp[u][v] == '0' && lemin->tmp[v][u]  == '0')
                 {
                     lemin->graph[u][v] = '0';
-                    chnage++;
+                    change++;
                 }
                 lemin->tmp[u][v] = lemin->graph[u][v];
             }
         }
-        if (!chnage)
+        if (!change)
             break;
-        else chnage = 0;
+        else change = 0;
 
         //printf("%s\n", mat[1]);
     }
 
-/*
-    t_group *temp = lemin->groups;
+
+
+
+    t_group *teemp = best_groups(lemin->groups, lemin->n_ant);
+    teemp = dispatchant(teemp, lemin);
+    /*
+    t_group *temp = teemp;
     while (temp)
     {
         printf("Group & size %d \n", temp->paths->size);
@@ -667,18 +695,16 @@ int main()
         while (paths)
         {
             t_path *newpath = paths->path; 
-            int khalid = newpath->size;
+            int khalid = paths->nbr_ant;
             while (newpath) { printf("%s ", lemin->names[newpath->node]); newpath = newpath->next;}
-            printf(" size : %d \n", khalid);
+            printf(" antnbr : %d \n", khalid);
             paths = paths->next;
         }
         
         temp = temp->next;
     }
     printf("******\n");
-
 */
-    t_group *teemp = best_groups(lemin->groups, lemin->n_ant);
     t_group *tmp = teemp;
     t_arrays* s = createArrays(tmp, lemin->n_ant);
     /*while (s){
