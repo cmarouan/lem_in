@@ -71,6 +71,14 @@ typedef struct s_group
     struct s_group *next;
 }               t_group;
 
+
+typedef struct s_arrays
+{
+    int *pathArray;
+    int size;
+    struct s_arrays *next;
+}               t_arrays;
+
 typedef struct s_lemin
 {
     int     size;
