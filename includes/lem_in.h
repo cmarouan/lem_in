@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/25 10:51:14 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/26 15:33:31 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 #define MIN(a,b) (a<=b?a:b)
 
 
+
+
+// create own ceil function;
 typedef struct s_line
 {
     char    *line;
@@ -75,9 +78,10 @@ typedef struct s_group
 
 typedef struct s_arrays
 {
-    int *pathArray;
+    int *patharray;
     int size;
     struct s_arrays *next;
+    struct s_arrays *last;
 }               t_arrays;
 
 typedef struct s_lemin
@@ -100,7 +104,13 @@ typedef struct s_lemin
     t_group *groups;
 }           t_lemin;
 
+typedef struct s_queue
+{
+    int     node;
+    struct s_queue *next;
+}               t_queue;
 
+char **fordfulkerson(t_lemin *lemin);
 
 
 

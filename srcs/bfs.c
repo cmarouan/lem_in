@@ -5,13 +5,9 @@
 #include <stdlib.h>
 #include "lem_in.h"
 
-#define ISEMPTY(q) (q == NULL)
+
  //char *names = "ABCDEFGHIJKLMN";
-typedef struct s_queue
-{
-    int     node;
-    struct s_queue *next;
-}               t_queue;
+
 
 
 t_queue *ft_createelm(int node)
@@ -37,19 +33,18 @@ t_queue *ft_enqueue(t_queue *queue, t_queue *new)
     return queue;
 }
 
-int ft_dequeue(t_queue **queue)
+t_queue *ft_dequeue(t_queue *queue, int *v)
 {
     t_queue *tmp;
-    int     ret;
 
-
-    if (!*queue)
-        return -1;
-    tmp = *queue;
-    *queue = (*queue)->next;
-    ret = tmp->node;
-    //ft_memdel(&tmp);
-    return (ret);
+    *v = -1;
+    if (!queue)
+        return NULL;
+    *v = queue->node;
+    tmp = queue;
+    queue = queue->next;
+    free(tmp);
+    return (queue);
 }
 //char **Names;
 int checknode(t_lemin *l, int node)
@@ -103,7 +98,7 @@ int bfs(t_lemin *l)
     while (queue)
     {
        
-        v = ft_dequeue(&queue);
+        queue = ft_dequeue(queue, &v);
         i = 0;
         if (print)
             printf("%s |\n", l->names[v]);
@@ -199,6 +194,7 @@ t_listpath *addpath(t_listpath *paths, t_path *newpath, int nbrant)
     list->path = newpath;
     list->size = 1;
     list->v_node = newpath->size - 1;
+    list->nbr_ant = 0;
     list->next = NULL;
     list->last = list;
     if (!paths)
@@ -270,7 +266,19 @@ char **fordfulkerson(t_lemin *l)
             paths = addpath(paths, newpath, l->n_ant);
             //khalid = paths->size;
           //  while (newpath) { printf("%s ", l->names[newpath->node]); newpath = newpath->next;}
+        }else
+        {
+            t_path *tt;
+            while (newpath) 
+            { 
+                tt = newpath;
+                //printf("%s ", l->names[newpath->node]);
+                newpath = newpath->next;
+                free(tt);
+            }
+                
         }
+        
        // printf("\n");
         
         //break;
