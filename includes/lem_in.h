@@ -18,7 +18,13 @@
 # include <stdlib.h>
 # include <limits.h>
 # define CEILL(a) ((double)((int)a) == a ? (int)a : (int)a + 1)
-
+# define TRUE 1
+# define FALSE 0
+# define START 0
+# define END 1
+# define ROOM 2
+# define LINK 3
+# define ERROR -1
 
 
 

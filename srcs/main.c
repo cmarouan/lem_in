@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "lem_in.h"
-#define TRUE 1
-#define FALSE 0
-#define START 0
-#define END 1
-#define ROOM 2
-#define LINK 3
-#define ERROR -1
 
 void ft_outerror()
 {
@@ -67,8 +57,6 @@ t_line  *ft_addline(t_line *list, char *line)
     return (list);
 }
 
-
-
 t_nodes      *ft_create_node(int type, char *name, int x, int y)
 {
     t_nodes *node;
@@ -105,17 +93,6 @@ t_nodes     *ft_add_node(t_nodes **l, t_nodes *node)
     return (*l);
 }
 
-void    ft_print_nodes(t_nodes *nodes)
-{
-
-    while(nodes)
-    {
-        ft_putendl_fd(nodes->name, 1);
-        nodes = nodes->next;
-    }
-    
-}
-
 t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin)
 {
     char **tab;
@@ -136,11 +113,11 @@ t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin)
     free(tab);
     return(lemin);
 }
+
 int     ft_linetype(char *line)
 {
     int c;
 
-    //char *tmp = line;
     c = 0;
     while (*line)
     {
@@ -148,7 +125,6 @@ int     ft_linetype(char *line)
             c++;
         line++;
     }
-    //printf("%s -- %d\n", tmp, c);
     if (c == 2) 
         return (ROOM);
     else if (c == 0)
@@ -174,19 +150,10 @@ int     ft_getindex(char *name, char **names, int size)
     return (-1);
 }
 
-void ft_printerr(char *s, int c)
-{
-    printf("here %s\n", s);
-    if (c)
-        exit(0);
-}
-
 t_lemin     *ft_readallnode(char **line, t_lemin *lemin)
 {
-    //list = &lemin->nodes;
     while (get_next_line(0, line))
     {
-        //ft_printerr(*line, 0);
         lemin->lines = ft_addline(lemin->lines, *line);
         if (!ft_strcmp("##start", *line))
             lemin = ft_readnode(NULL, START, lemin);
@@ -199,9 +166,7 @@ t_lemin     *ft_readallnode(char **line, t_lemin *lemin)
         else
             break;
         lemin->size++;
-        //ft_strdel(line);
     }
-    
     return (lemin);
 }
 
@@ -245,6 +210,7 @@ char **ft_initmat(int size)
     }
     return (mat);
 }
+
 t_lemin    *ft_readlink(t_lemin *lemin, char *line)
 {
     char **tab; 
@@ -259,9 +225,7 @@ t_lemin    *ft_readlink(t_lemin *lemin, char *line)
     if (tab[0] == NULL || tab[1] == NULL || tab[2] != NULL)
         ft_outerror();
     i = ft_getindex(tab[0], lemin->names, lemin->size);
-    //exit(0);
     j = ft_getindex(tab[1], lemin->names, lemin->size);
-    
     if (i == -1 || j == -1)
         ft_outerror();
     lemin->graph[i][j] = '1';
@@ -269,14 +233,10 @@ t_lemin    *ft_readlink(t_lemin *lemin, char *line)
     while (tab[x])
         free(tab[x++]);
     free(tab);
-    //ft_strdel(&line);
-    
     while (get_next_line(0, &line))
     {
-        //ft_putendl_fd(line, 1);
         lemin->lines = ft_addline(lemin->lines, line);
         if (!ft_strncmp("#", line, 1))
-            //ft_strdel(&line);
             continue;
         else
         {
@@ -294,32 +254,9 @@ t_lemin    *ft_readlink(t_lemin *lemin, char *line)
                 free(tab[x++]);
             free(tab);
         }
-        //ft_strdel(&line);
     }
-    //last line has been freed
     free(line);
     return (lemin);
-}
-void ft_printmat(char **mat, int size)
-{
-    int index = 0;
-
-    ft_putendl("x| 0 1 2 3 4 5 6 7");
-    ft_putendl("-----------------");
-    while (index < size)
-    {
-        int i = 0;
-        ft_putnbr(index);
-        ft_putstr("| ");
-        while (mat[index][i])
-        {
-            ft_putchar(mat[index][i]);
-            ft_putchar(' ');
-            i++;
-        }
-        ft_putchar('\n');
-        index++;
-    }
 }
 
 int countnodefromstart(char *g, int size)
@@ -349,30 +286,6 @@ t_adj *ft_addadj(t_adj *l, int node)
     t->next = l;
     return t;
 }
-
-      //printf("---%d %d %d---\n",nbNode , nb_ants,nbPath);
-/*
-void print_ant(char* arrays, int ants, int all_ants, int count)
-{
-    int i;
-    int an;
-    int before;
-    int after;
-
-    before = 0;
-    after = 0;
-    an = ants;
-    i = 0;
-    while (arrays[i])
-    {
-        if (arrays[i] == '1')
-        {
-            //printf("%d %d %d %d\n", all_ants,before,after, count);
-            printf("L%d-X ", );
-        }
-        i++;
-    }
-}*/
 
 t_group *dispatchant(t_group *teemp, t_lemin *lemin)
 {
@@ -409,13 +322,10 @@ void freelines(t_line *lines)
     while (lines)
     {
     
-        //if (!lines->next)
         free(lines->line);
-        //printf("%p\n",lines->line);
         tmp = lines;
         free(tmp);
         lines = lines->next;
-       // break;
     }
 }
 
@@ -470,8 +380,7 @@ void freegroups(t_group *grps)
     t_path *pt2;
     t_listpath *ltemp;
     t_listpath *lt2;
-    
-    
+     
     while (grps)
     {
         ltemp = grps->paths;
@@ -507,163 +416,48 @@ void freearrays(t_arrays *arr)
     }
 }
 
-int main()
+void initfunct(t_lemin *lemin, int i, int u, int v)
 {
-
-    t_lemin *lemin;
-   // t_nodes *l;
-    //int size;
-    char *line;
-    //t_names name;
-    //int number_of_ants;
-    //char **mat;
-    //char *result;
-
-    //l = NULL;
-    
-
-    lemin = (t_lemin *)malloc(sizeof(t_lemin));
-    lemin->lines = NULL;
-    lemin->nodes = NULL;
-    lemin->groups = NULL;
-    lemin->start = START;
-    lemin->goal = END;
-    lemin->nopath = 0;
-    
-    
-    //number of ants
-    get_next_line(0,&line);
-    lemin->n_ant = ft_atoli(line);
-    //printf("%d\n", lemin->n_ant);
-    //exit(0);
-    
-    
-    lemin->lines = ft_addline(lemin->lines, line);
-    
-    
-    //result = ft_strjoin_me(line, ENDLINE, TRUE);
-    // ft_putnbr_fd(number_of_ants, 1);
-    // ft_putendl_fd("", 1);
-    // read node 
-    
-    lemin = ft_readallnode(&line, lemin);
-    
-    
-    //freenodes(lemin->nodes);
-    //freelines(lemin->lines);
-    //free(lemin);
-    // list of name
-    //t_line *ln = lemin->lines;
-    
-    //freelines(lemin->lines);
-   // freenodes(lemin->nodes);
-    //free(lemin);
-    /*while (ln)
-    {
-        
-        printf("%s\n", ln->line);
-        //printf("e\n");
-        ln = ln->next;
-    }*/
-   // exit(0);
-    lemin->names = ft_buildnames(lemin->nodes, lemin->size);
-   
-    // Mat adj
-    lemin->graph = ft_initmat(lemin->size);
-    
-    // read links
-    lemin = ft_readlink(lemin, line);
-    
-    //Names = name.names;
-
-    // for (int i = 0; i < lemin->size; i++)
-    // {
-    //     printf("%s -> ",lemin->names[i]);
-    //     t_adj *tmp = lemin->adj[i];
-    //     while (tmp )
-    //     {
-    //         printf("%s ", lemin->names[tmp->node]);
-    //         tmp = tmp->next;
-    //     }
-           
-    //     printf("\n");
-    // }
-
-    //t_line *ln = lemin->names;
-    // int i = 0;
-    // while (i < lemin->size)
-    // {
-    //     printf("%s\n", lemin->names[i]);
-    //     i++;
-    // }
-
-
-
-    //ft_printmat(lemin->graph, lemin->size);
-    
-
-
-
-
-    
+    t_adj **adj;
 
     lemin->tmp = (char **)malloc(sizeof(char *) * lemin->size);
-    for (int i = 0; i < lemin->size; i++)
-        lemin->tmp[i] = (char *)malloc(sizeof(char) * lemin->size);
-
-    t_adj **adj;
+    while (i < lemin->size)
+        lemin->tmp[i++] = (char *)malloc(sizeof(char) * lemin->size);
     adj = (t_adj **)malloc(sizeof(t_adj *) * lemin->size);
     lemin->visited = (int *)malloc(sizeof(int) * lemin->size);
     lemin->used = (int *)malloc(sizeof(int) * lemin->size);
     lemin->pred = (int *)malloc(sizeof(int) * lemin->size);
     lemin->checker = (int *)malloc(sizeof(int) * lemin->size);
-    for (int u = 0; u < lemin->size; u++) 
+    while (++u < lemin->size)
     {
-        //used[u] = 0;}
-       //printf("%p\n", lemin->tmp);
+        v = -1;
         adj[u] = NULL;
         lemin->visited[u] = 0;
         lemin->used[u] = 0;
         lemin->checker[u] = 0;
-        for (int v = 0; v < lemin->size; v++) 
+        while (++v < lemin->size)
         {
-           // printf("%p - %p\n", &lemin->tmp[u][v], &graph[u][v] );
-           
             lemin->tmp[u][v] = lemin->graph[u][v];
             if (lemin->graph[u][v] == '1')
-            {
-               // printf("%s ", lemin->names[j]);
                 adj[u] = ft_addadj(adj[u], v);
-            }
         }
     }
     lemin->adj = adj;
-    
-    // t_line *ln = lemin->lines;
-    // while (ln)
-    // {
-    //     printf("%s\n", ln->line);
-    //     ln = ln->next;
-    // }
-    
+}
 
-    
-    int count = countnodefromstart(lemin->graph[0], lemin->size);
-    //count = 5;
+void implfordfulkerson(t_lemin *lemin, int count, int v, int u)
+{
+    int change;
+
     while (count)
     {
-       // printf("iteration %d \n", 5 - count--);
-       count--;
-       int change = 0;
+        count--;
+        change = 0;
         lemin->tmp = fordfulkerson(lemin);
-        //return 0;
-        //break;
-        for (int u = 0; u < lemin->size; u++) 
-        { 
-            //if (t[u][1] == '0')
-              //  mat[u][1] = '0';
+        while (u < lemin->size)
+        {
             lemin->used[u] = 0;
-            for (int v = 0; v < lemin->size; v++) 
+            while (v < lemin->size)
             {
                 if (lemin->graph[u][v] == '1' && lemin->tmp[u][v] == '0' && lemin->tmp[v][u]  == '0')
                 {
@@ -671,157 +465,18 @@ int main()
                     change++;
                 }
                 lemin->tmp[u][v] = lemin->graph[u][v];
+                v++;
             }
+            u++;
         }
         if (!change)
             break;
         else change = 0;
-        //printf("%s\n", mat[1]);
     }
-    // t_group *temp = lemin->groups;
-    // while (temp)
-    // {
-    //     printf("Group & size %d \n", temp->paths->size);
-    //     t_listpath *paths = temp->paths;
-    //     while (paths)
-    //     {
-    //         t_path *newpath = paths->path; 
-    //         int khalid = paths->nbr_ant;
-    //         while (newpath) { printf("%s ", lemin->names[newpath->node]); newpath = newpath->next;}
-    //         printf(" antnbr : %d \n", khalid);
-    //         paths = paths->next;
-    //     }
-        
-    //     temp = temp->next;
-    // }
-    // printf("******\n");
+}
 
-    // exit(0);
-
-    t_group *teemp = best_groups(lemin->groups, lemin->n_ant);
-
-    
-    teemp = dispatchant(teemp, lemin);
-   
-    if (teemp->paths->path->size == 2)
-    {
-        passallants(lemin->n_ant, lemin, teemp->paths->path);
-        return 0;
-    }
-    
-    /*
-    t_group *temp = teemp;
-    while (temp)
-    {
-        printf("Group & size %d \n", temp->paths->size);
-        t_listpath *paths = temp->paths;
-        while (paths)
-        {
-            t_path *newpath = paths->path; 
-            int khalid = paths->nbr_ant;
-            while (newpath) { printf("%s ", lemin->names[newpath->node]); newpath = newpath->next;}
-            printf(" antnbr : %d \n", khalid);
-            paths = paths->next;
-        }
-        
-        temp = temp->next;
-    }
-    printf("******\n");
-*/
-    // freelines(lemin->lines);
-    // freenodes(lemin->nodes);
-    // freetab(lemin->names, lemin->size);
-    // freetab(lemin->graph, lemin->size);
-    // freetab(lemin->tmp, lemin->size);
-    // freeadj(lemin->adj, lemin->size);
-    // free(lemin->used);
-    // free(lemin->visited);
-    // free(lemin->pred);
-    // free(lemin->checker);
-    // freegroups(lemin->groups);
-    // free(lemin);
-    // return 0;
-    
-    t_group *tmp = teemp;
-    
-    t_arrays* s = createarrays(tmp);
-    
-    //printf("%p\n", s);
-    /*t_arrays* s2 = s;
-    while (s){
-        int i = 0;
-        printf("hey*\n");
-        while (i < s->size)
-        {
-            printf("%d ", s->patharray[i]);
-            i++;
-        }
-        printf("\n");
-        s = s->next;
-        printf("%p\n", s);
-    }*/
-    pass_ants(s, lemin->n_ant, lemin, teemp->paths);
-
-    
-//exit(0);
-    
-
-    //printf("nbr inst : %d nbr paths : %d", tmp->best, tmp->stop);
-    //getname(lemin, teemp->paths->path, 2);
-    /*while (s->next)
-    {
-        int size = 0;
-        int i = 0;
-        //printf("|%d|\n",s->patharray[0]);
-        size = s->size;
-        while (i < size){
-            printf("%d ", s->patharray[i]);
-            i++;
-        }
-        printf("\n");
-        s = s->next;
-    }*/
-   // char **t = fordfulkerson(mat, 0, 1, size);
-    //printf("%s", result);
-    //ft_print_nodes(l);
-    // ft_putendl_fd("*****", 1);
-    // int index = 0;
-    // while (index < size)
-    // {
-    //     ft_putnbr(index);
-    //     ft_putchar_fd(' ', 1);
-    //     ft_putendl_fd(names[index], 1);
-    //     index++;
-    // }
-    // char **mat;
-    // mat = (char **)malloc(size * sizeof(char *));
-    // index = 0;
-    // while (index < size)
-    // {
-    //     mat[index] = (char *)ft_memalloc(sizeof(char) * (size + 1));
-    //     ft_memset(mat[index], '0', size);
-    //     index++;
-    // }
-
-
-    
-    // for (int i = 0; i < lemin->size; i++)
-    // {
-    //     printf("%s -> ",lemin->names[i]);
-    //     t_adj *tmp = lemin->adj[i];
-    //     while (tmp )
-    //     {
-    //         printf("%s ", lemin->names[tmp->node]);
-    //         tmp = tmp->next;
-    //     }
-           
-    //     printf("\n");
-    // }
-    
-    
-    
-
-    
+void allfreefunction(t_lemin *lemin, t_arrays *s)
+{
     freelines(lemin->lines);
     freenodes(lemin->nodes);
     freetab(lemin->names, lemin->size);
@@ -835,7 +490,53 @@ int main()
     freegroups(lemin->groups);
     freearrays(s);
     free(lemin);
+}
 
-    
+t_lemin *initlemin(char *line)
+{
+    t_lemin *lemin;
+
+    lemin = (t_lemin *)malloc(sizeof(t_lemin));
+    lemin->lines = NULL;
+    lemin->nodes = NULL;
+    lemin->groups = NULL;
+    lemin->start = START;
+    lemin->goal = END;
+    lemin->nopath = 0;
+    get_next_line(0,&line);
+    lemin->n_ant = ft_atoli(line);
+    lemin->lines = ft_addline(lemin->lines, line);
+    lemin = ft_readallnode(&line, lemin);
+    lemin->names = ft_buildnames(lemin->nodes, lemin->size);
+    lemin->graph = ft_initmat(lemin->size);
+    lemin = ft_readlink(lemin, line);
+    return (lemin);
+}
+
+int main()
+{
+    t_lemin *lemin;
+    char *line;
+    int count;
+    t_group *teemp;
+    t_group *tmp;
+    t_arrays *s;
+
+    line = NULL;
+    lemin = initlemin(line);
+    initfunct(lemin, 0, -1, -1);
+    count = countnodefromstart(lemin->graph[0], lemin->size);
+    implfordfulkerson(lemin, count, 0, 0);
+    teemp = best_groups(lemin->groups, lemin->n_ant);
+    teemp = dispatchant(teemp, lemin);
+    if (teemp->paths->path->size == 2)
+    {
+        passallants(lemin->n_ant, lemin, teemp->paths->path);
+        return 0;
+    }
+    tmp = teemp;
+    s = createarrays(tmp);
+    pass_ants(s, lemin->n_ant, lemin, teemp->paths);
+    allfreefunction(lemin, s);
     return (0);
 }
