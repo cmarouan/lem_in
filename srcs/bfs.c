@@ -232,9 +232,10 @@ char **fordfulkerson(t_lemin *l)
 
     //int i = 0;
     l->check = 1;
+    
     while (bfs(l))
     {
-        
+        l->nopath = 1;
         u = l->goal;
         newpath = NULL;
         l->check = 0;
@@ -286,6 +287,7 @@ char **fordfulkerson(t_lemin *l)
         
         
     }
+    if (l->nopath == 0) ft_outerror();
 
     l->groups = addgroup(l->groups, paths);
    // printf(" %p , %d \n", l->groups, paths->size);

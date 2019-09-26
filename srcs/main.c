@@ -10,6 +10,39 @@
 #define LINK 3
 #define ERROR -1
 
+void ft_outerror()
+{
+    ft_putstr("ERROR");
+    exit(ERROR);
+}
+
+int		ft_atoli(const char *str)
+{
+	int			i;
+	long long	nbr;
+
+	i = 0;
+	nbr = 0;
+	while (*str == '\t' || *str == '\n'
+			|| *str == ' ' || *str == '\v'
+			|| *str == '\f' || *str == '\r')
+		str++;
+	if (str[0] == '+')
+		i++;
+	while (ft_isdigit(str[i]))
+	{
+		nbr = nbr * 10 + (str[i] - '0');
+		i++;
+	}
+    if (!ft_isdigit(str[i]) && str[i] != '\0')
+        ft_outerror();
+	if (str[0] == '-')
+		nbr = nbr * -1;
+    if (nbr > INT_MAX)
+        return (INT_MAX);
+	return ((int)nbr);
+}
+
 
 t_line *ft_createline(char *line)
 {
@@ -34,11 +67,7 @@ t_line  *ft_addline(t_line *list, char *line)
     return (list);
 }
 
-void ft_outerror()
-{
-    ft_putstr("ERROR");
-    exit(ERROR);
-}
+
 
 t_nodes      *ft_create_node(int type, char *name, int x, int y)
 {
@@ -98,7 +127,9 @@ t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin)
         lemin->lines = ft_addline(lemin->lines, line);
     }
     tab = ft_strsplit(line, ' ');
-    ft_add_node(&lemin->nodes, ft_create_node(node_name, ft_strdup(tab[0]), ft_atoi(tab[1]), ft_atoi(tab[2])));
+    if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL || tab[3] != NULL)
+        ft_outerror();
+    ft_add_node(&lemin->nodes, ft_create_node(node_name, ft_strdup(tab[0]), ft_atoli(tab[1]), ft_atoli(tab[2])));
     i = 0;
     while (tab[i])
         free(tab[i++]);
@@ -181,7 +212,7 @@ char **ft_buildnames(t_nodes *tmp, int size)
 
     index = 2;
     names = (char **)malloc(size * sizeof(char *));
-     while(tmp)
+    while(tmp)
     {
         if (tmp->type == START)
             names[START] = ft_strdup(tmp->name);
@@ -194,6 +225,8 @@ char **ft_buildnames(t_nodes *tmp, int size)
         }
         tmp = tmp->next;
     }
+     if (!names[START] || !names[END])
+        ft_outerror();
     return (names);
 }
 
@@ -223,8 +256,12 @@ t_lemin    *ft_readlink(t_lemin *lemin, char *line)
     if (!line)
         ft_outerror();
     tab = ft_strsplit(line, '-');
+    if (tab[0] == NULL || tab[1] == NULL || tab[2] != NULL)
+        ft_outerror();
     i = ft_getindex(tab[0], lemin->names, lemin->size);
+    //exit(0);
     j = ft_getindex(tab[1], lemin->names, lemin->size);
+    
     if (i == -1 || j == -1)
         ft_outerror();
     lemin->graph[i][j] = '1';
@@ -233,6 +270,7 @@ t_lemin    *ft_readlink(t_lemin *lemin, char *line)
         free(tab[x++]);
     free(tab);
     //ft_strdel(&line);
+    
     while (get_next_line(0, &line))
     {
         //ft_putendl_fd(line, 1);
@@ -243,6 +281,8 @@ t_lemin    *ft_readlink(t_lemin *lemin, char *line)
         else
         {
             tab = ft_strsplit(line, '-');
+            if (tab[0] == NULL || tab[1] == NULL || tab[2] != NULL)
+                ft_outerror();
             i = ft_getindex(tab[0], lemin->names, lemin->size);
             j = ft_getindex(tab[1], lemin->names, lemin->size);
             if (i == -1 || j == -1)
@@ -401,61 +441,7 @@ t_arrays* createArrays(t_group* grps)
     }
     return (arrays);
 }
-/*
-int pass_ants(char *arr, int nb_ant, int nb_done)
-{
-    int size;
-    int t_size;
 
-    size = ft_strlen(arr) - 1;
-    t_size = size;
-    while (size != -1)
-    {
-        if (arr[size] == '1')
-        {
-            arr[size] = '0';
-            arr[size + 1] = '1';
-        }
-        if (size == 0 && nb_ant > -1)
-            arr[size] = '1';
-        if (size == t_size && arr[size] == '1')
-            nb_done++;
-        size--;
-    }
-    return (nb_done);
-}*/
-/*
-void send_ants(t_arrays* arr, int ants, t_group* grp)
-{
-    int i;
-    int j;
-    int all;
-    t_arrays* tarr;
-    int count;
-
-    count = 0;
-    i = 0;
-    j = 0;
-    all = ants;
-    //to remove
-    grp = NULL;
-    tarr = (t_arrays*)malloc(sizeof(t_arrays));
-    tarr = arr;
-    while (ants > 0)
-    {
-        while (tarr->next)
-        {
-            ants--;
-            
-            count += pass_ants(tarr->patharray, ants, count);
-            printf("|%s|\n", tarr->patharray);
-            print_ant(tarr->patharray, ants, all, count);
-            tarr = tarr->next;
-        }
-        if (tarr->next == NULL)
-            tarr = arr;
-    }
-}*/
 
 t_group* best_groups(t_group* grps, int nb_ants)
 {
@@ -767,12 +753,14 @@ int main()
     lemin->groups = NULL;
     lemin->start = START;
     lemin->goal = END;
+    lemin->nopath = 0;
     
     
     //number of ants
     get_next_line(0,&line);
-    lemin->n_ant = ft_atoi(line);
-
+    lemin->n_ant = ft_atoli(line);
+    //printf("%d\n", lemin->n_ant);
+    //exit(0);
     
     
     lemin->lines = ft_addline(lemin->lines, line);
@@ -804,12 +792,13 @@ int main()
     }*/
    // exit(0);
     lemin->names = ft_buildnames(lemin->nodes, lemin->size);
-    
+   
     // Mat adj
     lemin->graph = ft_initmat(lemin->size);
     
     // read links
     lemin = ft_readlink(lemin, line);
+    
     //Names = name.names;
 
     // for (int i = 0; i < lemin->size; i++)
@@ -832,6 +821,14 @@ int main()
     //     printf("%s\n", lemin->names[i]);
     //     i++;
     // }
+
+
+
+    //ft_printmat(lemin->graph, lemin->size);
+    
+
+
+
 
     
 
@@ -1045,7 +1042,7 @@ int main()
            
     //     printf("\n");
     // }
-    // ft_printmat(lemin->graph, lemin->size);
+    
     
     
 

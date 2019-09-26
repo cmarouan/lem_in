@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/26 15:33:31 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/26 16:51:12 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
+# include <limits.h>
 #define MIN(a,b) (a<=b?a:b)
 
 
@@ -91,6 +92,7 @@ typedef struct s_lemin
     int     goal;
     int     n_ant;
     int     check;
+    int     nopath;
     t_nodes *nodes; 
     char    **graph;
     char    **tmp;
@@ -111,7 +113,7 @@ typedef struct s_queue
 }               t_queue;
 
 char **fordfulkerson(t_lemin *lemin);
-
+void ft_outerror();
 
 
 
