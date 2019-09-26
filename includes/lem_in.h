@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/26 20:21:54 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/26 21:26:34 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@
 # include "libft.h"
 # include <stdio.h>
 # include <stdlib.h>
-#include <string.h>
-# include <math.h>
 # include <limits.h>
-#define MIN(a,b) (a<=b?a:b)
+# define CEILL(a) ((double)((int)a) == a ? (int)a : (int)a + 1)
 
 
 

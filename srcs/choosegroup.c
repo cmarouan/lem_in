@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   choosegroup.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 19:18:47 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/26 20:01:48 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/26 21:26:17 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_group			*verifyoneg(t_group *bestg, t_vargrp var, int nb, t_group *grp)
 		if (tmp->path)
 			var.nbnode += tmp->path->size;
 		antintr = (double)(nb + var.nbnode - ++var.count * 2);
-		tmp->path->all_prev_inst = ceil(antintr / (double)var.count);
+		tmp->path->all_prev_inst = CEILL(antintr / (double)var.count);
 		if (var.m > tmp->path->all_prev_inst)
 		{
 			grp->stop = var.count;
@@ -87,7 +87,7 @@ t_group			*verifyoneg(t_group *bestg, t_vargrp var, int nb, t_group *grp)
 	}
 	grp->best = var.m;
 	antintr = (double)((var.nbnode + nb) - (var.nbpath * 2));
-	grp->instr = ceil(antintr / (double)var.nbpath);
+	grp->instr = CEILL(antintr / (double)var.nbpath);
 	if (bestg == NULL)
 		bestg = grp;
 	else if (bestg->best > grp->best)
