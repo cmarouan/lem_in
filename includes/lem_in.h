@@ -85,6 +85,12 @@ typedef struct s_arrays
     struct s_arrays *last;
 }               t_arrays;
 
+typedef struct s_queue
+{
+    int     node;
+    struct s_queue *next;
+}               t_queue;
+
 typedef struct s_lemin
 {
     int     size;
@@ -93,7 +99,8 @@ typedef struct s_lemin
     int     n_ant;
     int     check;
     int     nopath;
-    t_nodes *nodes; 
+    t_nodes *nodes;
+    t_queue *queue;
     char    **graph;
     char    **tmp;
     char    **names;
@@ -106,17 +113,35 @@ typedef struct s_lemin
     t_group *groups;
 }           t_lemin;
 
-typedef struct s_queue
+
+
+typedef struct s_passant
 {
-    int     node;
-    struct s_queue *next;
-}               t_queue;
+    int         size;
+    int         nb;
+    int         done;
+    int         nameant;
+}               t_passant;
+
+typedef struct s_vargrp
+{
+    int nbpath;
+	int nbnode;
+	int count;
+	int m;
+}               t_vargrp;
+
+
 
 char **fordfulkerson(t_lemin *lemin);
 void ft_outerror();
-
-
-
+char  *getname(t_lemin* lemin, t_path* path, int index);
+void passallants(int ants, t_lemin* lemin, t_path *path);
+void pass_ants(t_arrays* s, int n_ant, t_lemin *lemin, t_listpath *paths);
+int*    ft_bzero_me(int *s, int size);
+t_arrays *addtoarray(t_arrays *arr, int size, int nbrant);
+t_arrays* createarrays(t_group* grps);
+t_group* best_groups(t_group* grps, int nb_ants);
 
 
 // typedef struct  s_names

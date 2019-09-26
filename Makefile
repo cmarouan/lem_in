@@ -1,6 +1,6 @@
 
 NAME = lem
-SRC = srcs/main.c srcs/bfs.c
+SRC = srcs/main.c srcs/bfs.c srcs/pass_ants.c srcs/choosegroup.c
 CFLAG = -Wall -Wextra -Werror
 INC = includes
 
