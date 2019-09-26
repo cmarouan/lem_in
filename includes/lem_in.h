@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/26 16:51:12 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/26 20:21:54 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft.h"
 # include <stdio.h>
 # include <stdlib.h>
+#include <string.h>
 # include <math.h>
 # include <limits.h>
 #define MIN(a,b) (a<=b?a:b)
@@ -142,6 +143,26 @@ int*    ft_bzero_me(int *s, int size);
 t_arrays *addtoarray(t_arrays *arr, int size, int nbrant);
 t_arrays* createarrays(t_group* grps);
 t_group* best_groups(t_group* grps, int nb_ants);
+
+t_queue		*ft_createelm(int node);
+t_queue		*ft_enqueue(t_queue *queue, t_queue *new);
+t_queue		*ft_dequeue(t_queue *queue, int *v);
+
+void		ft_inittab(t_lemin *l);
+int			bfs(t_lemin *l, int i, int v, t_adj *tmp);
+char		**fordfulkerson(t_lemin *l);
+
+t_path		*addnode(t_path *path, int node);
+t_listpath	*addpath(t_listpath *paths, t_path *newpath, int nbrant);
+t_group		*addgroup(t_group *grps, t_listpath *paths);
+void		freepath(t_path *newpath);
+t_path		*ft_pathbuilder(t_lemin *l, t_path *newpath, int u);
+
+
+
+
+
+
 
 
 // typedef struct  s_names
