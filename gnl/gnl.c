@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   gnl.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 17:21:44 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/26 17:22:24 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/27 12:55:38 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "get_next_line.h"
+#include "lem_in.h"
 
 int		back_n(char *s)
 {
