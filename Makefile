@@ -1,7 +1,9 @@
 
 NAME = lem
-SRC = srcs/main.c srcs/bfs.c srcs/pass_ants.c srcs/choosegroup.c \
-		srcs/ft_path.c srcs/ft_queue.c
+SRC = srcs/main.c srcs/ft_bfs.c srcs/ft_pass_ants.c srcs/ft_choosegroup.c \
+		srcs/ft_path.c srcs/ft_queue.c srcs/ft_free.c srcs/ft_parse.c \
+		srcs/ft_line.c srcs/ft_init.c srcs/ft_node.c srcs/ft_math.c \
+		srcs/ft_tools.c
 CFLAG = -Wall -Wextra -Werror
 INC = includes
 

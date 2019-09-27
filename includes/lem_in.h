@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/26 21:26:34 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/27 11:01:34 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ typedef struct s_lemin
     t_line  *lines;
     int     *checker;
     t_group *groups;
+    t_arrays *arrays;
 }           t_lemin;
 
 
@@ -162,6 +163,36 @@ t_group		*addgroup(t_group *grps, t_listpath *paths);
 void		freepath(t_path *newpath);
 t_path		*ft_pathbuilder(t_lemin *l, t_path *newpath, int u);
 
+void freelines(t_line *lines);
+void freenodes(t_nodes *nodes);
+void freetab(char **names, int size);
+void freeadj(t_adj **adj, int size);
+void freegroups(t_group *grps, t_group *temp);
+t_lemin     *ft_readallnode(char **line, t_lemin *lemin);
+t_lemin     *ft_readnode(char *line, int node_name, t_lemin *lemin);
+t_lemin    *ft_readlink(t_lemin *lemin, char *line);
+int     ft_linetype(char *line);
+int     ft_getindex(char *name, char **names, int size);
+
+
+
+
+//init
+void initfunct(t_lemin *lemin, int i, int u, int v);
+t_lemin *initlemin(char *line);
+char **ft_initmat(int size);
+void ft_fillgraph(t_lemin *lemin, char *line);
+
+//line 
+t_line *ft_createline(char *line);
+t_line  *ft_addline(t_line *list, char *line);
+void ft_printlines(t_line *lines);
+
+
+//node
+t_nodes      *ft_create_node(int type, char *name, int x, int y);
+t_nodes     *ft_get_node(char *name, t_nodes *l);
+t_nodes     *ft_add_node(t_nodes **l, t_nodes *node);
 
 
 
@@ -169,26 +200,38 @@ t_path		*ft_pathbuilder(t_lemin *l, t_path *newpath, int u);
 
 
 
-// typedef struct  s_names
-// {
-//     char    **names;
-//     int     size;
-// }               t_names;
 
-// typedef struct s_path
-// {
-//     int             node;
-//     int             grpid;
-//     int             lastnode;
-//     int             size;
-//     struct s_path   *next;
-// }               t_path;
+//math
+int		ft_atoli(const char *str);
 
-// typedef struct s_queue
-// {
-//     t_path          *path;
-//     int             size;
-//     struct s_queue  *next;
-// }               t_queue;
+
+//not done yet
+
+//tools
+
+int countnodefromstart(char *g, int size);
+char **ft_buildnames(t_nodes *tmp, int size);
+t_adj *ft_addadj(t_adj *l, int node);
+t_group *dispatchant(t_group *teemp, t_lemin *lemin);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void freearrays(t_arrays *arr);
+void ft_outerror();
+void allfreefunction(t_lemin *lemin, t_arrays *s);
+void implfordfulkerson(t_lemin *lemin, int count, int v, int u);
+
+
 
 #endif
