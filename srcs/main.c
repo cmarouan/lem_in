@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 14:34:55 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 14:41:00 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/27 15:15:26 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_outerror(void)
 {
-	ft_putstr("ERROR");
+	ft_putstr("ERROR\n");
 	exit(ERROR);
 }
 

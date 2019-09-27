@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parse.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:52:33 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 13:54:21 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/27 15:21:56 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ t_lemin			*ft_readnode(char *line, int node_name, t_lemin *lemin)
 		lemin->lines = ft_addline(lemin->lines, line);
 	}
 	tab = ft_strsplit(line, ' ');
-	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL || tab[3] != NULL)
+	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL
+		|| tab[3] != NULL || tab[0][0] == 'L' || tab[0][0] == '#')
 		ft_outerror();
 	ft_add_node(&lemin->nodes, ft_create_node(node_name, ft_strdup(tab[0]),
 				ft_atoli(tab[1]), ft_atoli(tab[2])));
