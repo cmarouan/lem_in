@@ -107,6 +107,8 @@ typedef struct			s_lemin
 	int					*visited;
 	int					*used;
 	int					*pred;
+	int					fstart;
+	int					fend;
 	t_adj				**adj;
 	t_line				*lines;
 	int					*checker;

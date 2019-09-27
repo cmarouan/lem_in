@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 14:34:55 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 15:15:26 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/27 14:41:00 by cmarouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	implfordfulkerson(t_lemin *lemin, int count, int v, int u)
 		while (u < lemin->size)
 		{
 			lemin->used[u++] = 0;
+			v = 0;
 			while (v < lemin->size)
 			{
 				if (lemin->graph[u - 1][v] == '1' &&

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parse.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:52:33 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 15:21:56 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/27 13:54:21 by cmarouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,15 @@ t_lemin			*ft_readallnode(char **line, t_lemin *lemin)
 	{
 		lemin->lines = ft_addline(lemin->lines, *line);
 		if (!ft_strcmp("##start", *line))
+		{
 			lemin = ft_readnode(NULL, START, lemin);
+			lemin->fstart = 1;
+		}
 		else if (!ft_strcmp("##end", *line))
+		{
 			lemin = ft_readnode(NULL, END, lemin);
+			lemin->fend = 1;
+		}
 		else if (!ft_strncmp("#", *line, 1))
 			continue;
 		else if (ft_linetype(*line) == ROOM)
@@ -39,12 +45,14 @@ t_lemin			*ft_readnode(char *line, int node_name, t_lemin *lemin)
 
 	if (!line)
 	{
+		if ((lemin->fend == 1 && node_name == END) ||
+		(lemin->fstart == 1 && node_name == START))
+			ft_outerror();
 		get_next_line(0, &line);
 		lemin->lines = ft_addline(lemin->lines, line);
 	}
 	tab = ft_strsplit(line, ' ');
-	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL
-		|| tab[3] != NULL || tab[0][0] == 'L' || tab[0][0] == '#')
+	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL || tab[3] != NULL)
 		ft_outerror();
 	ft_add_node(&lemin->nodes, ft_create_node(node_name, ft_strdup(tab[0]),
 				ft_atoli(tab[1]), ft_atoli(tab[2])));
