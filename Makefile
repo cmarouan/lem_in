@@ -8,18 +8,21 @@ CFLAG = -Wall -Wextra -Werror
 INC = includes
 
 
+OBJ = $(SRC:.c=.o)
+
 all:$(NAME)
 
-$(NAME):
-	#echo $(OBJ)
+$(NAME): $(OBJ)
 	make -C libft/
-	gcc -c $(CFLAG) $(SRC) -I $(INC)
-	gcc -o $(NAME) *.o -L libft -lft
+	#gcc -c $(CFLAG) $(SRC) -I $(INC)
+	gcc -o $(NAME) $(OBJ) -L libft -lft
 
+$(OBJ) : %.o : %.c
+		gcc $(CFLAG) -o $@ -c $< -I $(INC) 
 
 clean:
 	make -C libft/ clean
-	rm -rf *.o
+	rm -rf $(OBJ)
 
 fclean:clean
 	make -C libft/ fclean

@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kmoussai <khalidmossaid@gmail.com>         +#+  +:+       +#+         #
+#    By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/06 10:05:26 by kmoussai          #+#    #+#              #
-#    Updated: 2018/10/17 09:55:20 by kmoussai         ###   ########.fr        #
+#    Updated: 2019/09/27 13:38:23 by kmoussai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = ft_lstnew.c		ft_putstr.c			ft_strmapi.c\
+SRCS = ft_lstnew.c		ft_putstr.c			ft_strmapi.c\
 	  ft_memalloc.c		ft_putstr_fd.c		ft_strncat.c\
 	  ft_atoi.c			ft_memccpy.c		ft_strcat.c\
 	  ft_strncmp.c		ft_bzero.c			ft_memchr.c\
@@ -34,7 +34,7 @@ SRC = ft_lstnew.c		ft_putstr.c			ft_strmapi.c\
 
 HEADERS = libft.h
 
-OBJ = *.o 
+OBJ = $(SRCS:.c=.o)
 
 CFLAG = -Wall -Wextra -Werror
 
@@ -42,10 +42,13 @@ NAME = libft.a
 
 all: $(NAME) 
 
-$(NAME):
-	gcc -c $(CFLAG) $(SRC)
+$(NAME): $(OBJ)
 	ar rc $(NAME) $(OBJ) $(HEADERS)
 	ranlib	$(NAME)
+
+
+$(OBJ) : %.o : %.c
+		gcc $(CFLAG) -o $@ -c $< -I $(HEADERS)
 clean:
 	/bin/rm -f $(OBJ)
 fclean: clean
