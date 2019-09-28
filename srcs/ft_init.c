@@ -36,6 +36,8 @@ t_lemin	*initlemin(char *line)
 	lemin->lines = NULL;
 	lemin->nodes = NULL;
 	lemin->groups = NULL;
+	lemin->fend = 0;
+	lemin->fstart = 0;
 	lemin->start = START;
 	lemin->goal = END;
 	lemin->nopath = 0;
