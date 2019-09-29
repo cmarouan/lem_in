@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tools.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:46:24 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 13:52:18 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/29 21:29:00 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_group		*dispatchant(t_group *teemp, t_lemin *lemin)
 		i = 0;
 		it = teemp->paths;
 		ansr = it;
-		while (i < teemp->stop)
+		while (it)
 		{
 			if (ansr->v_node > it->v_node)
 				ansr = it;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 14:34:55 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 14:41:00 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/29 21:32:06 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,35 +31,6 @@ void	freearrays(t_arrays *arr)
 	}
 }
 
-void	implfordfulkerson(t_lemin *lemin, int count, int v, int u)
-{
-	int	change;
-
-	while (count--)
-	{
-		change = 0;
-		lemin->tmp = fordfulkerson(lemin);
-		while (u < lemin->size)
-		{
-			lemin->used[u++] = 0;
-			v = 0;
-			while (v < lemin->size)
-			{
-				if (lemin->graph[u - 1][v] == '1' &&
-				lemin->tmp[u - 1][v] == '0' && lemin->tmp[v][u - 1] == '0')
-				{
-					lemin->graph[u - 1][v] = '0';
-					change++;
-				}
-				lemin->tmp[u - 1][v] = lemin->graph[u - 1][v];
-				v++;
-			}
-		}
-		if (!change)
-			break ;
-	}
-}
-
 void	allfreefunction(t_lemin *lemin, t_arrays *s)
 {
 	freelines(lemin->lines);
@@ -77,29 +48,57 @@ void	allfreefunction(t_lemin *lemin, t_arrays *s)
 	free(lemin);
 }
 
+void	solve(t_lemin *lemin)
+{
+	t_path		*newpath;
+	t_listpath	*paths;
+
+	lemin->check = 0;
+	while (bfs_sp(lemin, 0, 0, NULL))
+	{
+		lemin->check = 1;
+		ft_graphupdate(lemin, lemin->goal);
+		copy_graph(lemin);
+		paths = NULL;
+		while (bfs_nulledge(lemin, 0, 0, NULL))
+		{
+			lemin->check_used = 0;
+			newpath = ft_pathbuilder_nulledge(lemin, NULL, lemin->goal);
+			if (lemin->check_used == 0)
+				paths = addpath(paths, newpath, lemin->n_ant);
+			else
+				freepath(newpath);
+		}
+		lemin->groups = addgroup(lemin->groups, paths);
+	}
+	if (!lemin->check)
+		ft_outerror();
+}
+
 int		main(void)
 {
 	t_lemin			*lemin;
-	char			*line;
-	int				count;
 	t_group			*teemp;
-	t_group			*tmp;
+	t_listpath		*p;
 
-	line = NULL;
-	lemin = initlemin(line);
+	lemin = initlemin(NULL);
 	initfunct(lemin, 0, -1, -1);
-	count = countnodefromstart(lemin->graph[0], lemin->size);
-	implfordfulkerson(lemin, count, 0, 0);
-	teemp = best_groups(lemin->groups, lemin->n_ant);
-	teemp = dispatchant(teemp, lemin);
+	solve(lemin);
+	teemp = best_groups(lemin);
+	teemp->stop = 0;
+	p = teemp->paths;
+	while (p)
+	{
+		p = p->next;
+		teemp->stop++;
+	}
+	ft_printlines(lemin->lines);
 	if (teemp->paths->path->size == 2)
 	{
 		passallants(lemin->n_ant, lemin, teemp->paths->path);
 		return (0);
 	}
-	tmp = teemp;
-	lemin->arrays = createarrays(tmp);
-	ft_printlines(lemin->lines);
+	lemin->arrays = createarrays(teemp);
 	pass_ants(lemin->arrays, lemin->n_ant, lemin, teemp->paths);
 	allfreefunction(lemin, lemin->arrays);
 	return (0);

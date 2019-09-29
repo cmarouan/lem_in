@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   choosegroup.c                                      :+:      :+:    :+:   */
+/*   ft_choosegroup.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 19:18:47 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/26 21:26:17 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/29 21:26:46 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,51 +66,30 @@ t_arrays		*createarrays(t_group *grps)
 	return (arrays);
 }
 
-t_group			*verifyoneg(t_group *bestg, t_vargrp var, int nb, t_group *grp)
-{
-	t_listpath	*tmp;
-	double		antintr;
-
-	tmp = grp->paths;
-	while (tmp)
-	{
-		if (tmp->path)
-			var.nbnode += tmp->path->size;
-		antintr = (double)(nb + var.nbnode - ++var.count * 2);
-		tmp->path->all_prev_inst = CEILL(antintr / (double)var.count);
-		if (var.m > tmp->path->all_prev_inst)
-		{
-			grp->stop = var.count;
-			var.m = tmp->path->all_prev_inst;
-		}
-		tmp = tmp->next;
-	}
-	grp->best = var.m;
-	antintr = (double)((var.nbnode + nb) - (var.nbpath * 2));
-	grp->instr = CEILL(antintr / (double)var.nbpath);
-	if (bestg == NULL)
-		bestg = grp;
-	else if (bestg->best > grp->best)
-		bestg = grp;
-	return (bestg);
-}
-
-t_group			*best_groups(t_group *grps, int nb_ants)
+t_group			*best_groups(t_lemin *lemin)
 {
 	t_group		*bestg;
 	t_group		*grp;
-	t_vargrp	var;
+	int			ansr;
 
-	bestg = NULL;
-	grp = grps;
+	ansr = -1;
+	grp = lemin->groups;
 	while (grp)
 	{
-		var.nbnode = 0;
-		var.nbpath = grp->paths->size;
-		var.m = INT_MAX;
-		var.count = 0;
-		bestg = verifyoneg(bestg, var, nb_ants, grp);
+		grp = dispatchant(grp, lemin);
+		if (ansr == -1)
+		{
+			ansr = (grp->paths->nbr_ant + grp->paths->path->size - 2);
+			bestg = grp;
+		}
+		else if (ansr > (grp->paths->nbr_ant + grp->paths->path->size - 2))
+		{
+			ansr = (grp->paths->nbr_ant + grp->paths->path->size - 2);
+			bestg = grp;
+		}
 		grp = grp->next;
 	}
+	bestg->instr = ansr;
+	bestg->stop = 0;
 	return (bestg);
 }

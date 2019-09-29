@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 17:21:44 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 12:55:38 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/29 18:48:16 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int		back_n(char *s)
 			return (i);
 		i++;
 	}
+	if (i == 0 && s[0] != '\n' && s[0] != '\0')
+		return (ft_strlen(s));
 	return (0);
 }
 
@@ -35,7 +37,6 @@ int		get_next_line(const int fd, char **line)
 	int		rd;
 
 	rd = 0;
-	i = 0;
 	s = NULL;
 	if (fd < 0 || BUFF_SIZE < 1 || !line || read(fd, buff, 0) < 0)
 		return (-1);
@@ -49,7 +50,8 @@ int		get_next_line(const int fd, char **line)
 		if (fd == 0 && back_n(s))
 			break ;
 	}
-	i = back_n(s);
+	if ((i = back_n(s)) != 0)
+		rd = 1;
 	*line = ft_strsub(s, 0, i);
 	free(s);
 	return (rd);

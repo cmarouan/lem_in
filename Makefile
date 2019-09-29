@@ -14,7 +14,6 @@ all:$(NAME)
 
 $(NAME): $(OBJ)
 	make -C libft/
-	#gcc -c $(CFLAG) $(SRC) -I $(INC)
 	gcc -o $(NAME) $(OBJ) -L libft -lft
 
 $(OBJ) : %.o : %.c

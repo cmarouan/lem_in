@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_math.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmarouan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:43:46 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/27 13:43:58 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/29 17:03:06 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,6 @@ int		ft_atoli(const char *str)
 	if (str[0] == '-')
 		nbr = nbr * -1;
 	if (nbr > INT_MAX)
-		return (INT_MAX);
+		ft_outerror();
 	return ((int)nbr);
 }

@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 20:16:22 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/26 20:27:53 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/09/29 21:31:13 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void		freepath(t_path *newpath)
 	}
 }
 
-t_path		*ft_pathbuilder(t_lemin *l, t_path *newpath, int u)
+void		ft_graphupdate(t_lemin *l, int u)
 {
 	int v;
 
@@ -86,14 +86,11 @@ t_path		*ft_pathbuilder(t_lemin *l, t_path *newpath, int u)
 		l->checker[u] = 1;
 		if (l->used[u])
 			l->check++;
-		newpath = addnode(newpath, u);
 		if (u != l->goal && u != l->start)
 			l->used[u] = 1;
 		v = l->pred[u];
-		l->tmp[v][u] = '0';
+		l->graph[v][u]--;
+		l->graph[u][v]++;
 		u = v;
 	}
-	if (u == l->start)
-		newpath = addnode(newpath, u);
-	return (newpath);
 }

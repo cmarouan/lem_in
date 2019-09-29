@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/27 14:29:48 by cmarouan         ###   ########.fr       */
+/*   Updated: 2019/09/29 21:34:54 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct			s_lemin
 	t_line				*lines;
 	int					*checker;
 	t_group				*groups;
+	int					check_used;
 	t_arrays			*arrays;
 }						t_lemin;
 
@@ -132,7 +133,6 @@ typedef struct			s_vargrp
 	int					m;
 }						t_vargrp;
 
-char					**fordfulkerson(t_lemin *lemin);
 void					ft_outerror();
 char					*getname(t_lemin *lemin, t_path *path, int index);
 void					passallants(int ants, t_lemin *lemin, t_path *path);
@@ -141,19 +141,20 @@ void					pass_ants(t_arrays *s, int n_ant, t_lemin *lemin,
 int						*ft_bzero_me(int *s, int size);
 t_arrays				*addtoarray(t_arrays *arr, int size, int nbrant);
 t_arrays				*createarrays(t_group *grps);
-t_group					*best_groups(t_group *grps, int nb_ants);
+t_group					*best_groups(t_lemin *l);
 t_queue					*ft_createelm(int node);
 t_queue					*ft_enqueue(t_queue *queue, t_queue *new);
 t_queue					*ft_dequeue(t_queue *queue, int *v);
 void					ft_inittab(t_lemin *l);
 int						bfs(t_lemin *l, int i, int v, t_adj *tmp);
-char					**fordfulkerson(t_lemin *l);
 t_path					*addnode(t_path *path, int node);
 t_listpath				*addpath(t_listpath *paths, t_path *newpath,
 		int nbrant);
 t_group					*addgroup(t_group *grps, t_listpath *paths);
 void					freepath(t_path *newpath);
-t_path					*ft_pathbuilder(t_lemin *l, t_path *newpath, int u);
+void					ft_graphupdate(t_lemin *l, int u);
+t_path					*ft_pathbuilder_nulledge(t_lemin *l,
+							t_path *newpath, int u);
 void					freelines(t_line *lines);
 void					freenodes(t_nodes *nodes);
 void					freetab(char **names, int size);
@@ -182,7 +183,10 @@ t_group					*dispatchant(t_group *teemp, t_lemin *lemin);
 void					freearrays(t_arrays *arr);
 void					ft_outerror();
 void					allfreefunction(t_lemin *lemin, t_arrays *s);
-void					implfordfulkerson(t_lemin *lemin, int count, int v,
-		int u);
+int						bfs_sp(t_lemin *l, int i, int v, t_adj *tmp);
+int						bfs_nulledge(t_lemin *l, int i, int v, t_adj *tmp);
+t_path					*ft_pathbuilder_nulledge(t_lemin *l,
+						t_path *newpath, int u);
+void					copy_graph(t_lemin *lemin);
 
 #endif
