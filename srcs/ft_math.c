@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:43:46 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/29 17:03:06 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:21:37 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		ft_atoli(const char *str)
 		ft_outerror();
 	if (str[0] == '-')
 		nbr = nbr * -1;
-	if (nbr > INT_MAX)
+	if (nbr > INT_MAX || nbr <= 0)
 		ft_outerror();
 	return ((int)nbr);
 }

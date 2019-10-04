@@ -6,27 +6,11 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:46:24 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/29 21:29:00 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:22:29 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
-
-int			countnodefromstart(char *g, int size)
-{
-	int		i;
-	int		c;
-
-	c = 0;
-	i = 0;
-	while (i < size)
-	{
-		if (g[i] == '1')
-			c++;
-		i++;
-	}
-	return (c);
-}
 
 char		**ft_buildnames(t_nodes *tmp, int size)
 {
