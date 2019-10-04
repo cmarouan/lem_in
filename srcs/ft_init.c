@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 14:07:17 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/10/04 10:26:29 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:43:47 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_lemin	*initlemin(char *line)
 			break ;
 	lemin->n_ant = ft_atoli(line);
 	if (lemin->n_ant == 0)
-		ft_outerror();
+		ft_outerror(NO_ANT);
 	lemin->lines = ft_addline(lemin->lines, line);
 	lemin = ft_readallnode(&line, lemin);
 	lemin->names = ft_buildnames(lemin->nodes, lemin->size);
@@ -93,14 +93,14 @@ void	ft_fillgraph(t_lemin *lemin, char *line)
 	int		j;
 
 	if (ft_linetype(line) != LINK)
-		ft_outerror();
+		ft_outerror(LINK_ERR);
 	tab = ft_strsplit(line, '-');
 	if (tab[0] == NULL || tab[1] == NULL || tab[2] != NULL)
-		ft_outerror();
+		ft_outerror(LINK_ERR);
 	i = ft_getindex(tab[0], lemin->names, lemin->size);
 	j = ft_getindex(tab[1], lemin->names, lemin->size);
 	if (i == -1 || j == -1)
-		ft_outerror();
+		ft_outerror(NODE_NOT_FOUND);
 	lemin->graph[i][j] = '1';
 	lemin->graph[j][i] = '1';
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:43:46 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/10/04 11:21:37 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:44:37 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ int		ft_atoli(const char *str)
 		i++;
 	}
 	if (!ft_isdigit(str[i]) && str[i] != '\0')
-		ft_outerror();
+		ft_outerror(NOT_NUMBER);
 	if (str[0] == '-')
 		nbr = nbr * -1;
-	if (nbr > INT_MAX || nbr <= 0)
-		ft_outerror();
+	if (nbr > INT_MAX)
+		ft_outerror(TO_MANY_ANT);
 	return ((int)nbr);
 }

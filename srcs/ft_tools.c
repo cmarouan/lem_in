@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:46:24 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/10/04 11:22:29 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:37:32 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char		**ft_buildnames(t_nodes *tmp, int size)
 		tmp = tmp->next;
 	}
 	if (!names[START] || !names[END])
-		ft_outerror();
+		ft_outerror(START_OR_END_NOT_FOUND);
 	return (names);
 }
 

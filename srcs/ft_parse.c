@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:52:33 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/10/04 11:05:38 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:49:22 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,16 @@ t_lemin			*ft_readnode(char *line, int node_name, t_lemin *lemin)
 	{
 		if ((lemin->fend == 1 && node_name == END) ||
 		(lemin->fstart == 1 && node_name == START))
-			ft_outerror();
+			ft_outerror(DOUBLE_START_OR_END);
 		get_next_line(0, &line);
 		lemin->lines = ft_addline(lemin->lines, line);
 	}
 	if (ft_linetype(line) != ROOM)
-		ft_outerror();
+		ft_outerror(NODE_DATA_ERR);
 	tab = ft_strsplit(line, ' ');
-	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL || tab[3] != NULL)
-		ft_outerror();
+	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL
+		|| tab[3] != NULL || tab[0][0] == 'L')
+		ft_outerror(NODE_DATA_ERR);
 	ft_add_node(&lemin->nodes, ft_create_node(node_name, ft_strdup(tab[0]),
 				ft_atoli(tab[1]), ft_atoli(tab[2])));
 	i = 0;
@@ -68,7 +69,7 @@ t_lemin			*ft_readnode(char *line, int node_name, t_lemin *lemin)
 t_lemin			*ft_readlink(t_lemin *lemin, char *line)
 {
 	if (!line)
-		ft_outerror();
+		ft_outerror(LINK_ERR);
 	ft_fillgraph(lemin, line);
 	while (get_next_line(0, &line))
 	{
@@ -101,7 +102,7 @@ int				ft_linetype(char *line)
 	else if (c2 == 1 && c == 0)
 		return (LINK);
 	else if (c != 0 || c2 != 0)
-		ft_outerror();
+		ft_outerror((c != 0 ? NODE_DATA_ERR : LINK_ERR));
 	return (ERROR);
 }
 

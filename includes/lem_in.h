@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/24 13:46:59 by kmoussai          #+#    #+#             */
-/*   Updated: 2019/09/29 21:34:54 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:38:09 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,15 @@
 # define ROOM 2
 # define LINK 3
 # define ERROR -1
+# define NO_PATH "No path found"
+# define DOUBLE_START_OR_END "double Start/End"
+# define NODE_DATA_ERR "Err in Room data"
+# define LINK_ERR "Err in link data"
+# define NO_ANT "No ant"
+# define NODE_NOT_FOUND "Room not found"
+# define TO_MANY_ANT "To many ant or no Ant"
+# define NOT_NUMBER "Not number Err"
+# define START_OR_END_NOT_FOUND "Start/End not found"
 # include "get_next_line.h"
 # include "libft.h"
 # include <stdio.h>
@@ -133,7 +142,7 @@ typedef struct			s_vargrp
 	int					m;
 }						t_vargrp;
 
-void					ft_outerror();
+void					ft_outerror(char *msg);
 char					*getname(t_lemin *lemin, t_path *path, int index);
 void					passallants(int ants, t_lemin *lemin, t_path *path);
 void					pass_ants(t_arrays *s, int n_ant, t_lemin *lemin,
@@ -181,7 +190,6 @@ char					**ft_buildnames(t_nodes *tmp, int size);
 t_adj					*ft_addadj(t_adj *l, int node);
 t_group					*dispatchant(t_group *teemp, t_lemin *lemin);
 void					freearrays(t_arrays *arr);
-void					ft_outerror();
 void					allfreefunction(t_lemin *lemin, t_arrays *s);
 int						bfs_sp(t_lemin *l, int i, int v, t_adj *tmp);
 int						bfs_nulledge(t_lemin *l, int i, int v, t_adj *tmp);

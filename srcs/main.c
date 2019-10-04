@@ -6,15 +6,16 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 14:34:55 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/10/04 11:10:57 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:30:23 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-void	ft_outerror(void)
+void	ft_outerror(char *msg)
 {
-	ft_putstr("ERROR\n");
+	ft_putstr("ERROR : ");
+	ft_putendl(msg);
 	exit(ERROR);
 }
 
@@ -72,7 +73,7 @@ void	solve(t_lemin *lemin)
 		lemin->groups = addgroup(lemin->groups, paths);
 	}
 	if (!lemin->check)
-		ft_outerror();
+		ft_outerror(NO_PATH);
 }
 
 int		main(void)
