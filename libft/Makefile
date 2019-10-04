@@ -6,7 +6,7 @@
 #    By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/06 10:05:26 by kmoussai          #+#    #+#              #
-#    Updated: 2019/09/27 13:38:23 by kmoussai         ###   ########.fr        #
+#    Updated: 2019/10/04 10:06:24 by kmoussai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ SRCS = ft_lstnew.c		ft_putstr.c			ft_strmapi.c\
 	  ft_strmap.c		ft_sort_integer_table.c	ft_swap.c
 
 HEADERS = libft.h
-
+INC = .
 OBJ = $(SRCS:.c=.o)
 
 CFLAG = -Wall -Wextra -Werror
@@ -48,7 +48,7 @@ $(NAME): $(OBJ)
 
 
 $(OBJ) : %.o : %.c
-		gcc $(CFLAG) -o $@ -c $< -I $(HEADERS)
+		gcc $(CFLAG) -o $@ -c $< -I $(INC)
 clean:
 	/bin/rm -f $(OBJ)
 fclean: clean

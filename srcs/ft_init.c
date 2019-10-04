@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 14:07:17 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/29 19:58:58 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 10:26:29 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ void	ft_fillgraph(t_lemin *lemin, char *line)
 	int		i;
 	int		j;
 
+	if (ft_linetype(line) != LINK)
+		ft_outerror();
 	tab = ft_strsplit(line, '-');
 	if (tab[0] == NULL || tab[1] == NULL || tab[2] != NULL)
 		ft_outerror();

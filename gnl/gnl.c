@@ -6,53 +6,44 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/26 17:21:44 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/29 18:48:16 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:04:53 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-int		back_n(char *s)
+char	*ft_concat(char *src, char *c)
 {
-	int	i;
+	char	*new;
+	int		size;
 
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '\n')
-			return (i);
-		i++;
-	}
-	if (i == 0 && s[0] != '\n' && s[0] != '\0')
-		return (ft_strlen(s));
-	return (0);
+	size = ft_strlen(src);
+	new = ft_strnew(size + 1);
+	new = ft_strcpy(new, src);
+	free(src);
+	new[size] = *c;
+	return (new);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	char	*s;
-	char	buff[BUFF_SIZE + 1];
-	int		i;
-	char	*temp;
-	int		rd;
+	char *r;
+	char *src;
+	char c;
 
-	rd = 0;
-	s = NULL;
-	if (fd < 0 || BUFF_SIZE < 1 || !line || read(fd, buff, 0) < 0)
-		return (-1);
-	s = ft_strnew(1);
-	while ((rd = read(fd, buff, BUFF_SIZE)) > 0)
+	src = ft_strnew(1);
+	r = ft_strnew(1);
+	while (read(fd, r, 1))
 	{
-		buff[rd] = '\0';
-		temp = s;
-		s = ft_strjoin(s, buff);
-		free(temp);
-		if (fd == 0 && back_n(s))
+		if (r[0] == '\n')
 			break ;
+		src = ft_concat(src, r);
 	}
-	if ((i = back_n(s)) != 0)
-		rd = 1;
-	*line = ft_strsub(s, 0, i);
-	free(s);
-	return (rd);
+	c = r[0];
+	free(r);
+	*line = src;
+	if (ft_strlen(src) > 0 || c == '\n')
+		return (1);
+	free(src);
+	return (0);
 }

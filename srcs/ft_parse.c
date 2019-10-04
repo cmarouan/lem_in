@@ -6,7 +6,7 @@
 /*   By: kmoussai <kmoussai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 13:52:33 by cmarouan          #+#    #+#             */
-/*   Updated: 2019/09/29 21:27:42 by kmoussai         ###   ########.fr       */
+/*   Updated: 2019/10/04 11:05:38 by kmoussai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_lemin			*ft_readnode(char *line, int node_name, t_lemin *lemin)
 		get_next_line(0, &line);
 		lemin->lines = ft_addline(lemin->lines, line);
 	}
+	if (ft_linetype(line) != ROOM)
+		ft_outerror();
 	tab = ft_strsplit(line, ' ');
 	if (tab[0] == NULL || tab[1] == NULL || tab[2] == NULL || tab[3] != NULL)
 		ft_outerror();
@@ -76,41 +78,53 @@ t_lemin			*ft_readlink(t_lemin *lemin, char *line)
 		else
 			ft_fillgraph(lemin, line);
 	}
-	free(line);
 	return (lemin);
 }
 
 int				ft_linetype(char *line)
 {
 	int			c;
+	int			c2;
 
 	c = 0;
+	c2 = 0;
 	while (*line)
 	{
 		if (*line == ' ')
 			c++;
+		else if (*line == '-')
+			c2++;
 		line++;
 	}
-	if (c == 2)
+	if (c == 2 && c2 == 0)
 		return (ROOM);
-	else if (c == 0)
+	else if (c2 == 1 && c == 0)
 		return (LINK);
-	else
-		return (ERROR);
+	else if (c != 0 || c2 != 0)
+		ft_outerror();
+	return (ERROR);
 }
 
 int				ft_getindex(char *name, char **names, int size)
 {
 	int			i;
+	int			c;
+	int			index;
 
 	i = 0;
+	c = 0;
 	if (!name)
 		return (-1);
 	while (i < size)
 	{
 		if (!ft_strcmp(name, names[i]))
-			return (i);
+		{
+			c++;
+			index = i;
+		}
 		i++;
 	}
+	if (c == 1)
+		return (index);
 	return (-1);
 }
